@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Kalender</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel='stylesheet' href='css/bootstrap.css'>
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <link rel='stylesheet' type='text/css' href='css/fullcalendar.css' />
+<script type='text/javascript' src="js/jquery-1.9.1.js"></script>
+<script type='text/javascript' src='js/jquery-ui-1.9.2.custom.min.js'></script>
+<script type='text/javascript' src='js/bootstrap.js'></script>
+<script type='text/javascript' src='js/fullcalendar.js'></script>
+<?php 
+require_once "include/Session.php";
+$session = new Session();
+require_once "include/db.php";
+$rooms = R::findAll("room");
+$event_types = R::findAll("typeinfo");
+$users = R::findAll("user");
+?>
+<script type='text/javascript' src='js/bootstrap-datetimepicker.min.js'></script>
+<link rel='stylesheet' href="css/datetimepicker.css">
+<style type="text/css">
+table { table-layout:fixed; }
+table td { overflow: hidden; }
+</style>
+
+</head>
+<body>
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="test.html">Bootstrap</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="test.html">Home</a>
+              </li>
+              <li class="">
+                <a href="test.html">Get started</a>
+              </li>
+              <li class="">
+                <a href="test.html">Scaffolding</a>
+              </li>
+              <li class="">
+                <a href="test.html">Base CSS</a>
+              </li>
+              <li class="">
+                <a href="test.html">Components</a>
+              </li>
+              <li class="">
+                <a href="test.html">JavaScript</a>
+              </li>
+              <li class="">
+                <a href="test.html">Customize</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+</div>
+
+ <div class="tab-pane" id="pills-stacked">
+              <h3>Stacked Pills</h3>
+      <div class="tabbable">
+                <ul class="nav nav-pills nav-stacked span2">
+                  <li class="active"><a href="#tabs5-pane1" data-toggle="tab">Tab 1</a></li>
+                  <li><a href="#tabs5-pane2" id="jama" data-toggle="tab">Tab 2</a></li>
+                  <li><a href="#tabs5-pane3" data-toggle="tab">Tab 3</a></li>
+                  <li><a href="#tabs5-pane4" data-toggle="tab">Tab 4</a></li>
+                </ul>
+                <div class="tab-content span10">
+                  <div id="tabs5-pane1" class="tab-pane active">
+                    <h4>The Markup</h4>
+                              <table class="table table-hover table-bordered table-condensed" id="tabletable">
+                              <thead class="cf">
+                            <tr>
+                              <th>Pealkiri</th>
+                              <th>Kasutaja</th>
+                              <th>Ruum</th>
+                              <th>Algus</th>
+                              <th>Lõpp</th>
+                              <th style="width: 20%">Kirjeldus</th>
+                              <th>Viimati muudetud</th>
+                              <th>Viimane muutja</th>
+                              <th>Broneeringu tüüp</th>
+                            </tr>
+                          </thead>
+                        <tbody>
+                        </tbody>
+                        </table>
+                 </div>
+                  <div id="tabs5-pane2" class="tab-pane">
+                  <h4>Pane 2 Content</h4>
+                    
+                  </div>
+                  <div id="tabs5-pane3" class="tab-pane">
+                    <h4>Pane 3 Content</h4>
+                    <div class='calendar'></div>
+                  </div>
+                  <div id="tabs5-pane4" class="tab-pane">
+                    <h4>Pane 4 Content</h4>
+                    <p>Donec semper vestibulum dapibus. Integer et sollicitudin metus. Vivamus at nisi turpis. Phasellus vel tellus id felis cursus hendrerit. Suspendisse et arcu felis, ac gravida turpis. Suspendisse potenti.</p>
+                  </div>
+                </div><!-- /.tab-content -->
+      </div><!-- /.tabbable -->
+  </div>
+
+    </body>
+</html>
+<script type="text/javascript">
+/*
+var xxx = "2013-03-29 20:02";
+var parts = xxx.split(" ");
+var date = parts[0].split("-");
+var time = parts[1].split(":");
+var d = new Date(date[0],date[1]-1,date[2],time[0],time[1]);  
+var uus = new Date();
+var bbb = new Date();
+var uuu = d;
+    console.log(d); 
+    console.log(uus, bbb);
+if ( uus === bbb){
+console.log('sama');
+}
+if (d > uus){
+  console.log('tulevik');
+} else {
+  console.log('minevik');
+}
+*/
+//function to calculate window height
+function get_calendar_height() {
+      return $(window).height() - 30;
+}
+console.log(get_calendar_height());
+//Get JSON data from DB
+function loadEventAjax(){
+  $.ajax({
+    url: "events/_getEvents.php",
+    dataType: "json",
+    async: false,
+    cache: false, //disable ajax caching
+    success: function(data) {
+      originalJson = data;
+    }
+  }); 
+  return originalJson;
+} 
+
+//Build and populate the table with data from JSON 
+function populateTable(){ 
+var data = loadEventAjax();
+var table_obj = $('#tabletable');
+      $.each(data, function(index, item){
+           table_obj.append(
+            '<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
+            '</td><td data-title="Kasutaja" id="user">'+item.user+
+            '</td><td data-title="Ruum" id="room">'+item.room+
+            '</td><td data-title="Algus" id="start">'+item.start+
+            '</td><td data-title="Lõpp" id="end">'+item.end+
+            '</td><td data-title="Kirjeldus" id="description">'+item.description+
+            '</td><td data-title="Viimati muudetud" id="changing_date">'+item.changing_date+
+            '</td><td data-title="Viimane muutja" id="last_changed_user">'+item.last_changed_user+
+            '</td><td data-title="Broneeringu tüüp" id="type">'+item.type+
+            '</td></tr>'
+            );
+      });
+}
+
+$.getJSON('events/_getEvents.php', function(data) {
+
+  var table_obj = [];
+      $.each(data, function(index, item){
+           table_obj.push(
+            '<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
+            '</td><td data-title="Kasutaja" id="user">'+item.user+
+            '</td><td data-title="Ruum" id="room">'+item.room+
+            '</td><td data-title="Algus" id="start">'+item.start+
+            '</td><td data-title="Lõpp" id="end">'+item.end+
+            '</td><td data-title="Kirjeldus" id="description">'+item.description+
+            '</td><td data-title="Viimati muudetud" id="changing_date">'+item.changing_date+
+            '</td><td data-title="Viimane muutja" id="last_changed_user">'+item.last_changed_user+
+            '</td><td data-title="Broneeringu tüüp" id="type">'+item.type+
+            '</td></tr>'
+            );
+      });
+       $('#tabletable').append(table_obj);
+});
+var calevents;
+$.ajax({
+  url: "events/_getEvents.php",
+  dataType: "json",
+  async: false,
+  cache: false, //disable ajax caching
+  success: function(data) {
+    calevents = data;
+  }
+});
+$(document).ready(function() {
+  populateTable();
+
+ var events = []; 
+  $(calevents).each(function(ind,val){
+    var event = {
+      id : val.id,
+      title: val.title,
+      start: new Date(val.s_year, val.s_month-1, val.s_day, val.s_hour, val.s_minute),
+      end: new Date(val.e_year, val.e_month-1, val.e_day, val.e_hour, val.e_minute),
+      backgroundColor: val.background,
+      textColor: val.color,
+      borderColor: "#000",
+      allDay: val.allDay,
+      //url: isValid ? editUrl(val.id, "old") : null  // activate onclick
+      //url: isValid ? editOldBooking(val.id) : null
+      //urlhack : null,
+      description: val.description,
+      user: val.user,
+      room: val.room,
+      last_changed_by: val.last_changed_user,
+      changing_date: val.changing_date
+    };
+    events.push(event);
+  });
+
+
+
+  $('#tabs5-pane2').fullCalendar({
+  
+  events: events,
+  //dayClick: isValid ? dayClickHandler : null , // activate on click
+  defaultView: 'month',
+  header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,agendaWeek,agendaDay'
+  },
+  firstDay: 1, //start week from monday
+  weekMode: 'variable',
+  aspectRatio: 1.6, //size of the cell day
+  axisFormat: 'HH:mm', //timeformat on a week and day view
+  slotMinutes: 15, //how many minutes in one cell -- 1h= 4'15min = 4 cells
+  minTime: 7, //week/day table minimum starting time
+  maxTime: 21, //calendar ending date
+  timeFormat: 'HH:mm{ - HH:mm}', //24h format everywhere
+  viewDisplay: function(view) {
+        if(view.name == 'month')
+        {
+          console.log('aaa');
+            $('#tabs5-pane2').fullCalendar('refetchEvents');
+        }
+    }
+  });
+
+});
+</script>
