@@ -62,16 +62,14 @@ table td { overflow: hidden; }
 
     	-->
         <div class="tab-pane" id="addevent">
- 			 <!-- ALERT -->
-	         <div id="alert_placeholder3"></div>
 	      <form class="form-horizontal" data-async id="event-add-form" name="event-adding">
 	      <fieldset>
 
 	          <div class="control-group">	
 	          <!-- Text input-->
-	          <label class="control-label" for="room_nr_pick" name="">Ruum</label>  
+	          <label class="control-label" for="room_name" name="">Ruum</label>  
 	          <div class="controls">
-		          <select name="room_nr_pick" id="room_nr_pick">
+		          <select name="room_name" id="room_name">
 		           <?php foreach ($rooms as $room): ?>
 		           <option><?php echo $room->room_nr ?></option>
 		           <?php endforeach ?>
@@ -140,13 +138,14 @@ table td { overflow: hidden; }
 	          </div>
 	       </fieldset>
 	       </form>
-	        
+	        <!-- ALERT -->
+	        <div id="alert_placeholder3"></div>
 	        <div class="control-group">
 	        <!-- Text input-->
 	        <div class="controls">
 		    <button class="btn btn-success offset2" type="submit" id="event-add-submit" name="EVENT_SUBMIT_ADD">Sisesta broneering</button>
         	</div>
-	        </div>
+	        </div> 
         </div>
     </div>  
 </div>
@@ -222,7 +221,7 @@ function loadEventAjax(){
 */
 function populateTable(){ 
 	var data = loadEventAjax();
-	var table_obj = $('#event-table');
+	var table_obj = $('table#event-table > tbody');
       $.each(data, function(index, item){
            table_obj.append(
            	'<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
@@ -259,7 +258,7 @@ function formatDate(date_time){
 *
 */
 function isOverlapping(starting, ending){
-	  var room_nr = $('#room_nr_pick').val();
+	  var room_nr = $('#room_name').val();
 	  var jsonData = loadEventAjax();
 	  var events = []; 
   $(jsonData).each(function(index,value){
@@ -298,13 +297,12 @@ $(document).ready(function() {
 	*
 	*
 	*/
-	currentdatetime = new Date();
-	$(".datetimepicker").datetimepicker({
+	$("input.datetimepicker").datetimepicker({
 	 	format: 'yyyy-mm-dd hh:ii',
 	 	autoclose: true,
 	 	minuteStep: 15,
 	 	weekStart: 1,
-	 	startDate: currentdatetime
+	 	startDate: new Date()
 	 });
 
 	/*

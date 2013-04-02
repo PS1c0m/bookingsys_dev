@@ -5,18 +5,19 @@
     <!--[if lte IE 7]><script src="js/ie7/warning.js"></script><script>window.onload=function(){e("js/ie7/")}</script><![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="cache-control" content="max-age=604800;private" />
     <title>Broneerimissüsteem</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' type='text/css' href='css/bootstrap.css' />
-    <link rel='stylesheet' type='text/css' href="css/bootstrap-responsive.css">
+    <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
+    <link rel='stylesheet' type='text/css' href="css/bootstrap-responsive.min.css">
     <link rel='stylesheet' type='text/css' href='css/fullcalendar.css' />
     <link rel='stylesheet' type='text/css' href="css/datetimepicker.css">
     <link rel='stylesheet' type='text/css' href="css/custom_styling.css">
 
     <!--Modali jaoks vajalik-->
-    <script type='text/javascript' src="js/jquery-1.9.1.js"></script>
-    <script type='text/javascript' src='js/bootstrap.js'></script>
+    <script type='text/javascript' src="js/jquery-1.9.1.min.js"></script>
+    <script type='text/javascript' src='js/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/fullcalendar.js'></script>
     <!--<script type='text/javascript' src='js/jquery-ui-1.9.2.custom.min.js'></script>-->
     <script type='text/javascript' src='js/jquery-ui-1.10.2.custom.min.js'></script>
@@ -51,7 +52,7 @@
         <div class="tab-pane" id="content"></div>
 </div> 
 <!-- Ülemine nav-bar -->
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="myModal" class="modal hide"><!-- tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"-->
     <div class="modal-body"></div>
 </div>
 

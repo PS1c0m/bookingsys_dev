@@ -110,7 +110,15 @@ table td { overflow: hidden; }
                    <p id="p1">Hello World!</p>
 
                   <script>
+                  function nextSession(date) {
+                      var ret = new Date(date||new Date());
+                      ret.setDate(ret.getDate() + (3 - 1 - ret.getDay() + 7) % 7 + 1);
+                      return ret;
+                  }
                   $("#p1").html("New text!");
+                  var yyy = new Date();
+                  var xxx = new Date(yyy.getFullYear(), yyy.getMonth(), yyy.getDate()-1);
+                  console.log(xxx);
                   </script>
                   
                   </div>

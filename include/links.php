@@ -6,13 +6,13 @@ $session = new Session();
 	<!--<li><a href="teated.php" data-toggle="tab" data-target="#content">Teated</a></li>-->
 
 <?php if (isset($session->user)): ?>
-	<li><a  href="broneeringud.php" data-toggle="tab" data-target="#content">Broneeringud</a></li>
-<?php endif ?>
+	<li><a  href="broneeringud.php" data-toggle="tab" data-target="#content"><i class="icon-list icon-white"></i> Broneeringud</a></li>
+<?php endif ?> 
 
-	<li><a id='cal' href="kalender.php" data-toggle="tab" data-target="#content">Kalender</a></li>
+	<li><a id='cal' href="kalender.php" data-toggle="tab" data-target="#content"><i class="icon-calendar icon-white"></i> Kalender</a></li>
 
 <?php if (isset($session->user) && ($session->user->usertype === 'peakasutaja')): ?>
-	<li><a  href="haldus.php" data-toggle="tab" data-target="#content">Haldusliides</a></li>
+	<li><a  href="haldus.php" data-toggle="tab" data-target="#content"><i class="icon-cog icon-white"></i> Haldusliides</a></li>
 <?php endif ?>
 </ul>
 

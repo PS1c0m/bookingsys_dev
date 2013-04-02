@@ -36,7 +36,7 @@ $rooms = R::findAll($table);
 			</tbody>
 			</table>
 		</section>
-		
+
 		<!-- Sisseloginud kasutaja INFO -->
 	    	<div class="alert alert-info">
 			<a class="close" data-dismiss="alert">×</a> 
@@ -67,36 +67,7 @@ $rooms = R::findAll($table);
     	</div><!--#first-tab-info-->
 
     	<?php foreach ($rooms as $room) : ?>   	
-        <div class="tab-pane" id="room<?php echo $room->room_nr; ?>"></div> 
+        <div class="tab-pane hidden-phone" id="room<?php echo $room->room_nr; ?>"></div> 
         <?php endforeach ?>
     </div> 
-
 </div>
-
-<?php if (isset($session->user)): ?>
-<script type="text/javascript">
-$(document).ready(function() {
-//Get JSON data from DB
-$.ajax({
-    url: "room/_getRooms.php",
-    dataType: "json",
-    async: false,
-    cache: true, //enable ajax caching
-    success: function(data) {
-      originalJson = data;
-    }
-  }); 
-//Build and populate the table with data from JSON 
-var table_object = $('#rooms-table-calendar');
-$.each(originalJson, function(index, value){
-   table_object.append($(
-   	'<tr><td  data-title="Ruumi number" 	id="room_nr">'		+value.room_nr+
-   	'</td><td data-title="Ruumi tüüp" 		id="type">'			+value.type+
-   	'</td><td data-title="Istekohtade arv" 	id="size">'			+value.size+
-   	'</td><td data-title="Ruumi kirjeldus" 	id="description">'	+value.description+
-   	'</td></tr>'));
-});
-
-});
-</script>
-<?php endif ?>
