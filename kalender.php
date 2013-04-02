@@ -22,18 +22,6 @@ $rooms = R::findAll($table);
     	<div class="tab-pane active" id="first-tab-info">
 		<?php if (isset($session->user)): ?>
 
-			<!-- Sisseloginud kasutaja INFO -->
-	    	<div class="alert alert-info">
-			<a class="close" data-dismiss="alert">×</a> 
-			<strong>Juhend!</strong> 
-			<ul>
-			<li>Vasakul ribamenüüs on ruumide kalendrid kuhu on võimalik teha broneeringuid.</li>
-			<li>Ruumide suuruse, tüübi ja kirjelduse kohta saab infot allolevast tabelist.</li>
-		    <li>Terve päeva broneerimiseks vajutage kalendri kuuvaates vastavale kuupäevale.</li>
-		    <li>Kindla ajavahemiku broneerimiseks vajutage kalendri nädala- 
-		    või päevavaates hiirega algusajale ja vedage nuppu all hoides kuni broneeringu lõpukellaajani.</li>
-			</ul>
-			</div>
 		<section id="no-more-tables">
 			<table class="table table-striped table-hover table-bordered" id="rooms-table-calendar">
 			<thead>
@@ -48,6 +36,20 @@ $rooms = R::findAll($table);
 			</tbody>
 			</table>
 		</section>
+		
+		<!-- Sisseloginud kasutaja INFO -->
+	    	<div class="alert alert-info">
+			<a class="close" data-dismiss="alert">×</a> 
+			<strong>Juhend!</strong> 
+			<ul>
+			<li>Vasakul ribamenüüs on ruumide kalendrid kuhu on võimalik teha broneeringuid.</li>
+			<li>Ruumide suuruse, tüübi ja kirjelduse kohta saab infot allolevast tabelist.</li>
+		    <li>Terve päeva broneerimiseks vajutage kalendri kuuvaates vastavale kuupäevale.</li>
+		    <li>Kindla ajavahemiku broneerimiseks vajutage kalendri nädala- 
+		    või päevavaates hiirega algusajale ja vedage nuppu all hoides kuni broneeringu lõpukellaajani.</li>
+			</ul>
+			</div>
+
 		<?php else: ?>
 
 			<!-- Registreerimata kasutaja INFO -->

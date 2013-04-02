@@ -99,7 +99,7 @@ table td { overflow: hidden; }
 
 	           <div class="control-group">	
 	          <!-- Text input-->
-	          <label class="control-label" for="event_type" name="">Broneeringu Tüüp</label>  
+	          <label class="control-label" for="event_type" name="">Broneeringu tüüp</label>  
 	          <div class="controls">
 		          <select name="event_type" id="event_type">
 		           <?php foreach ($event_types as $eventtype): ?>
@@ -131,7 +131,7 @@ table td { overflow: hidden; }
 
 	          <div class="control-group">
 	          <!-- Textarea -->
-	          <label class="control-label">Broneeringu Kirjeldus</label>
+	          <label class="control-label">Broneeringu kirjeldus</label>
 	          <div class="controls">
 	          <div class="textarea">  
 	          <textarea rows="3" type="" class="" name="event_description" id="event_description"> </textarea>
@@ -144,7 +144,7 @@ table td { overflow: hidden; }
 	        <div class="control-group">
 	        <!-- Text input-->
 	        <div class="controls">
-		    <button class="btn btn-success offset2" type="submit" id="event-add-submit" name="EVENT_SUBMIT_ADD">Sisesta Broneering</button>
+		    <button class="btn btn-success offset2" type="submit" id="event-add-submit" name="EVENT_SUBMIT_ADD">Sisesta broneering</button>
         	</div>
 	        </div>
         </div>
@@ -321,26 +321,26 @@ $(document).ready(function() {
         var event_heading = $('#event_heading').val();
         var date = new Date();
         if (start === '' || end === '' || event_heading === '') {
-        	bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Palun täitke kõik väljad.');     
+        	bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Palun täitke kõik väljad.');     
         //Fields are fullfilled 
         } else { //2
         	var start_date = formatDate(start);
         	var end_date = formatDate(end);
         //Check if the user has picket a date from the past
         	if (date > start_date  || date > end_date) {
-        		bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu algus ega lõpp ei saa olla minevikus.');
+        		bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algus ega lõpp ei saa olla minevikus.');
         	}
         //Check if start and end dates are not the same
         	else if (start == end) {
-        		bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu algus- ja lõpukellaaeg ei saa olla samad.');
+        		bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algus- ja lõpukellaaeg ei saa olla samad.');
         	}
         //Check if start is before end
         	else if (start > end) {
-        		bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
+        		bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
         	}
     	// Now check if the dates are overlapping with existing events in DB
         	else if (isOverlapping(start_date, end_date)){
-				bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Antud ajad kattuvad süsteemis varasemalt olemasoleva broneeringuga.');
+				bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Antud ajad kattuvad süsteemis varasemalt olemasoleva broneeringuga.');
 		// If not let's send the data to PHP for server-side proccessing via AJAX POST
 			} else { //3
 			 	$.ajax({
@@ -350,7 +350,7 @@ $(document).ready(function() {
 			              success: function(msg) {
 			                 if(msg == 'error1') {
 			                   //error do something
-			                   bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
+			                   bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
 			                 } else if(msg == 'error2') { 
 			                   bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu väljad peavad olema täidetud.');
 			                 } else {

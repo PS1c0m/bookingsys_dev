@@ -18,7 +18,7 @@ if (isset($session->user) && ($session->user->usertype === 'peakasutaja')): ?>
     </div>  
 </div>
 <script>
-$(function() {
+$(document).ready(function() {
 $("#myTabs").tab(); // initialize tabs
 	$("#myTabs").bind("show", function(e) {
 		var contentID = $(e.target).attr("data-target");

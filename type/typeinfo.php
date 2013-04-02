@@ -197,13 +197,13 @@ $("#type-changeadd-submit").click(function(e) {
               success: function(msg) {
                  if(msg == 'error2') {
 	                  //error do something
-	                  bootstrap_alert.error('<strong><h4>Muutmine Ebaõnnestus!</h4>"Antud nimega klassifikaator juba eksisteerib süsteemis"</strong>');
+	                  bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>"Antud nimega klassifikaator juba eksisteerib süsteemis"</strong>');
                  } else if(msg == 'error1') { 
                       //error do something ..Room name and size cannot be empty, server side check
-                      bootstrap_alert.error('<strong><h4>Muutmine Ebaõnnestus!</h4>"Klassifikaatori kõik väljad peavad olema täidetud"</strong>');
+                      bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>"Klassifikaatori kõik väljad peavad olema täidetud"</strong>');
                  } else if(msg == 'error3') { 
                       //error do something ..Room name and size cannot be empty, server side check
-                      bootstrap_alert.error('<strong><h4>>Muutmine Ebaõnnestus!</h4>"Antud nimega klassifikaatorit ei eksisteeri süsteemis"</strong>');
+                      bootstrap_alert.error('<strong><h4>>Muutmine ebaõnnestus!</h4>"Antud nimega klassifikaatorit ei eksisteeri süsteemis"</strong>');
                  } else {
 	                  //success do something
 	                  bootstrap_alert.success('<strong>Klassifikaator edukalt muudetud.</strong>');
@@ -226,10 +226,10 @@ $("#type-changeadd-submit").click(function(e) {
               success: function(msg) {
                  if(msg == 'error') {
 	                  //error do something
-	                  bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4>"Antud nimega klassifikaator juba eksisteerib süsteemis"</strong>');
+	                  bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4>"Antud nimega klassifikaator juba eksisteerib süsteemis"</strong>');
                  } else if(msg == 'error1') { 
                       //error do something ..Room name and size cannot be empty, server side check
-                      bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4>"Klassifikaatori kõik väljad peavad olema täidetud"</strong>');
+                      bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4>"Klassifikaatori kõik väljad peavad olema täidetud"</strong>');
                  } else {
 	                  //success do something
 	                  bootstrap_alert.success('<strong>Uus klassifikaator edukalt süsteemi lisatud.</strong>');

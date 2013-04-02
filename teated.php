@@ -1,1 +1,0 @@
-<div><img src="img/AB_mysql.PNG" alt="AB_mysql"></div>

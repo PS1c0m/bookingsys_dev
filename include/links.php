@@ -3,13 +3,13 @@ require_once "include/Session.php";
 $session = new Session();
 ?>
 <ul class="nav" id="myNavBar">
-	<li><a href="teated.php" data-toggle="tab" data-target="#content">Teated</a></li>
+	<!--<li><a href="teated.php" data-toggle="tab" data-target="#content">Teated</a></li>-->
 
 <?php if (isset($session->user)): ?>
 	<li><a  href="broneeringud.php" data-toggle="tab" data-target="#content">Broneeringud</a></li>
 <?php endif ?>
 
-	<li><a href="kalender.php" data-toggle="tab" data-target="#content">Kalender</a></li>
+	<li><a id='cal' href="kalender.php" data-toggle="tab" data-target="#content">Kalender</a></li>
 
 <?php if (isset($session->user) && ($session->user->usertype === 'peakasutaja')): ?>
 	<li><a  href="haldus.php" data-toggle="tab" data-target="#content">Haldusliides</a></li>
@@ -53,9 +53,12 @@ $("#myNavBar").tab(); // initialize tabs
 });*/
 
 //HACK BROWSERI BACK BUTTONI JAOKS (hash)
-$(function(){
-	$('#content').load('teated.php');
-	$('#myNavBar a:first').tab("show"); // Load and display content for first tab
+$(document).ready(function(){
+
+// Load and display content for first tab
+	$('#content').load('kalender.php');
+	$('#cal').tab("show");
+
 // part 1 : add a hash to the location when I load a sub-page.
 		$('#myNavBar a').click(function(){
 			location.hash=$(this).attr('href').match(/(^.*)\./)[1]
@@ -85,7 +88,7 @@ $(function(){
 				lastHash=location.hash
 			},100)
 		}
-	})
+});
 
 /*
 $(document).ready(function() {

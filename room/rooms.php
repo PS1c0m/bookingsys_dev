@@ -41,7 +41,7 @@
           </div>
           <div class="control-group">
           <!-- Text input-->
-          <label class="control-label" for="room_type">Ruumitüüp</label>
+          <label class="control-label" for="room_type">Ruumi tüüp</label>
           <div class="controls">
           <input name="room_type" id="room_type" type="text" class="input-xlarge">
           </div>
@@ -156,7 +156,7 @@ var trId;
                   success: function(msg) {
                      if(msg == 'error') { 
                        //error do something 
-                       bootstrap_alert.error('<strong><h4>Kustutamine Ebaõnnestus!</h4>Ruumi ei saanud kustutatada, kuna ruumi ei leitud süsteemist.</strong>');
+                       bootstrap_alert.error('<strong><h4>Kustutamine ebaõnnestus!</h4>Ruumi ei saanud kustutatada, kuna ruumi ei leitud süsteemist.</strong>');
                      } else {
                        //success do something   
                        bootstrap_alert.success('<strong>Ruum ja sellega seonduvad broneeringud süsteemist kustutatud.</strong>');
