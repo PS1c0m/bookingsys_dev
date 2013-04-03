@@ -372,22 +372,7 @@ function pullEvents(room_name){
 }
 
 $(document).ready(function() {
-  /*
-  *
-  *
-  *Get JSON data from DB
-  *
-  *
-  */
-  $.ajax({
-      url: "room/_getRooms.php",
-      dataType: "json",
-      async: false,
-      cache: true, //enable ajax caching
-      success: function(data) {
-        originalJson = data;
-      }
-    }); 
+
   /*
   *
   *
@@ -395,14 +380,24 @@ $(document).ready(function() {
   *
   *
   */
-  var table_object = $('table#rooms-table-calendar > tbody');
-    $.each(originalJson, function(index, value){
-     table_object.append($(
-      '<tr><td  data-title="Ruumi number"   id="room_nr">'    +value.room_nr+
-      '</td><td data-title="Ruumi tüüp"     id="type">'     +value.type+
-      '</td><td data-title="Istekohtade arv"  id="size">'     +value.size+
-      '</td><td data-title="Ruumi kirjeldus"  id="description">'  +value.description+
-      '</td></tr>'));
+  $.getJSON('room/_getRooms.php', function(data) {
+    var r = new Array();
+    var j = -1;
+    r[++j] = '<thead class="cf"><tr><th>Ruumi number</th><th>Ruumi tüüp</th><th>Istekohtade arv</th><th style="width: 50%">Ruumi kirjeldus</th></tr></thead><tbody>';
+      for (var i in data){
+          var d = data[i];
+          r[++j] = '<tr><td  data-title="Ruumi number" id="room_nr">';
+          r[++j] = d.room_nr;
+          r[++j] = '</td><td data-title="Ruumi tüüp" id="type">';
+          r[++j] = d.type;
+          r[++j] = '</td><td data-title="Istekohtade arv" id="size">';
+          r[++j] = d.size;
+          r[++j] = '</td><td data-title="Ruumi kirjeldus" id="description">';
+          r[++j] = d.description;
+          r[++j] = '</td></tr>';
+      }
+    r[++j] = '</tbody>';
+    $('table#rooms-table-calendar').html(r.join(''));
   });
   /*
   *

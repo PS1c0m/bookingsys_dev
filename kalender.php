@@ -24,16 +24,6 @@ $rooms = R::findAll($table);
 
 		<section id="no-more-tables">
 			<table class="table table-striped table-hover table-bordered" id="rooms-table-calendar">
-			<thead>
-			  <tr>
-			      <th>Ruumi number</th>
-			      <th>Ruumi tüüp</th>
-			      <th>Istekohtade arv</th>
-			      <th style="width: 50%">Ruumi kirjeldus</th>
-			  </tr>
-			</thead>
-			<tbody>
-			</tbody>
 			</table>
 		</section>
 
@@ -43,10 +33,10 @@ $rooms = R::findAll($table);
 			<strong>Juhend!</strong> 
 			<ul>
 			<li>Vasakul ribamenüüs on ruumide kalendrid kuhu on võimalik teha broneeringuid.</li>
-			<li>Ruumide suuruse, tüübi ja kirjelduse kohta saab infot allolevast tabelist.</li>
-		    <li>Terve päeva broneerimiseks vajutage kalendri kuuvaates vastavale kuupäevale.</li>
-		    <li>Kindla ajavahemiku broneerimiseks vajutage kalendri nädala- 
-		    või päevavaates hiirega algusajale ja vedage nuppu all hoides kuni broneeringu lõpukellaajani.</li>
+			<li>Ruumide suuruse, tüübi ja kirjelduse kohta saab infot ülevalolevast tabelist.</li>
+			<li>Broneeringu muutmiseks/kustutamiseks või täpsema info saamiseks vajutage broneeringule.</li>
+		    <li>Broneeringuid on võimalik teha nii kuu- kui nädalavaates, vajutades kalendris olevale kuupäevale.</li>
+		    <li>Nädalavaates kindla ajavahemiku broneerimiseks vajutage hiirega algusajale ja vedage nuppu all hoides kuni broneeringu lõpukellaajani.</li>
 			</ul>
 			</div>
 

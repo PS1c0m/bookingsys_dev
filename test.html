@@ -80,23 +80,8 @@ table td { overflow: hidden; }
                 <div class="tab-content span10">
                   <div id="tabs5-pane1" class="tab-pane active">
                     <h4>The Markup</h4>
-                              <table class="table table-hover table-bordered table-condensed" id="tabletable">
-                              <thead class="cf">
-                            <tr>
-                              <th>Pealkiri</th>
-                              <th>Kasutaja</th>
-                              <th>Ruum</th>
-                              <th>Algus</th>
-                              <th>Lõpp</th>
-                              <th style="width: 20%">Kirjeldus</th>
-                              <th>Viimati muudetud</th>
-                              <th>Viimane muutja</th>
-                              <th>Broneeringu tüüp</th>
-                            </tr>
-                          </thead>
-                        <tbody>
-                        </tbody>
-                        </table>
+                              <table class="table table-hover table-bordered table-condensed" id="tabletable">               
+                             </table>
                  </div>
                   <div id="tabs5-pane2" class="tab-pane">
                   <h4>Pane 2 Content</h4>
@@ -159,7 +144,7 @@ function loadEventAjax(){
   $.ajax({
     url: "events/_getEvents.php",
     dataType: "json",
-    async: false,
+    async: true,
     cache: false, //disable ajax caching
     success: function(data) {
       originalJson = data;
@@ -187,26 +172,39 @@ var table_obj = $('#tabletable');
             );
       });
 }
-
 $.getJSON('events/_getEvents.php', function(data) {
-
-  var table_obj = [];
-      $.each(data, function(index, item){
-           table_obj.push(
-            '<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
-            '</td><td data-title="Kasutaja" id="user">'+item.user+
-            '</td><td data-title="Ruum" id="room">'+item.room+
-            '</td><td data-title="Algus" id="start">'+item.start+
-            '</td><td data-title="Lõpp" id="end">'+item.end+
-            '</td><td data-title="Kirjeldus" id="description">'+item.description+
-            '</td><td data-title="Viimati muudetud" id="changing_date">'+item.changing_date+
-            '</td><td data-title="Viimane muutja" id="last_changed_user">'+item.last_changed_user+
-            '</td><td data-title="Broneeringu tüüp" id="type">'+item.type+
-            '</td></tr>'
-            );
-      });
-       $('#tabletable').append(table_obj);
+var r = new Array();
+var j = -1, recordId;
+r[++j] = '<thead><tr><th>Pealkiri</th><th>Kasutaja</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Viimati muudetud</th><th>Viimane muutja</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+for (var i in data){
+    var d = data[i];
+    recordId = d.id;
+    r[++j] = '<tr id="';
+    r[++j] = recordId;
+    r[++j] = '"><td data-title="Pealkiri" id="title">';
+    r[++j] = d.title;
+    r[++j] = '</td><td data-title="Kasutaja" id="user">';
+    r[++j] = d.user;
+    r[++j] = '</td><td data-title="Ruum" id="room">';
+    r[++j] = d.room;
+    r[++j] = '</td><td data-title="Algus" id="start">';
+    r[++j] = d.start;
+    r[++j] = '</td><td data-title="Lõpp" id="end">';
+    r[++j] = d.end;
+    r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+    r[++j] = d.description;
+    r[++j] = '</td><td data-title="Viimati muudetud" id="changing_date">';
+    r[++j] = d.changing_date;
+    r[++j] = '</td><td data-title="Viimane muutja" id="last_changed_user">';
+    r[++j] = d.last_changed_user;
+    r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+    r[++j] = d.type;
+    r[++j] = '</td></tr>';
+}
+r[++j] = '</tbody>';
+$('#tabletable').html(r.join(''));
 });
+
 var calevents;
 $.ajax({
   url: "events/_getEvents.php",
@@ -218,7 +216,7 @@ $.ajax({
   }
 });
 $(document).ready(function() {
-  populateTable();
+  //populateTable();
 
  var events = []; 
   $(calevents).each(function(ind,val){

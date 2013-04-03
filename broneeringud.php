@@ -31,21 +31,6 @@ table td { overflow: hidden; }
     	-->
         <div class="tab-pane active" id="allevents">
         	<table class="table table-hover table-bordered table-condensed" id="event-table">
-        		<thead class="cf">
-					<tr>
-						<th>Pealkiri</th>
-						<th>Kasutaja</th>
-						<th>Ruum</th>
-						<th>Algus</th>
-						<th>Lõpp</th>
-						<th style="width: 20%">Kirjeldus</th>
-						<th>Viimati muudetud</th>
-						<th>Viimane muutja</th>
-						<th>Broneeringu tüüp</th>
-					</tr>
-				</thead>
-			<tbody>
-			</tbody>
 			</table>
         </div>
         <!--
@@ -152,33 +137,6 @@ table td { overflow: hidden; }
 
 </section>
 <script type="text/javascript">
-
-//Get JSON data from DB and build table
-/*
-$('#loading-indicator').show();
-$.getJSON('events/_getEvents.php', function(data) {
-
-  var table_obj = [];
-  
-      $.each(data, function(index, item){
-           table_obj.push(
-            '<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
-            '</td><td data-title="Kasutaja" id="user">'+item.user+
-            '</td><td data-title="Ruum" id="room">'+item.room+
-            '</td><td data-title="Algus" id="start">'+item.start+
-            '</td><td data-title="Lõpp" id="end">'+item.end+
-            '</td><td data-title="Kirjeldus" id="description">'+item.description+
-            '</td><td data-title="Viimati muudetud" id="changing_date">'+item.changing_date+
-            '</td><td data-title="Viimane muutja" id="last_changed_user">'+item.last_changed_user+
-            '</td><td data-title="Broneeringu tüüp" id="type">'+item.type+
-            '</td></tr>'
-            );
-      });
-       $('#event-table').append(table_obj);
-	$('#loading-indicator').hide();        
-});
-*/
-
 /*
 *
 *
@@ -196,47 +154,44 @@ bootstrap_alert.error = function(message) {
 /*
 *
 *
-*Get JSON data from DB
-*
-*
-*/
-function loadEventAjax(){
-  $.ajax({
-    url: "events/_getEvents.php",
-    dataType: "json",
-    async: false,
-    cache: false, //disable ajax caching
-    success: function(data) {
-      jsonData = data;
-    }
-  }); 
-  return jsonData;
-} 
-/*
-*
-*
 *Build and populate the table with data from JSON 
 *
 *
 */
 function populateTable(){ 
-	var data = loadEventAjax();
-	var table_obj = $('table#event-table > tbody');
-      $.each(data, function(index, item){
-           table_obj.append(
-           	'<tr id="'+item.id+'"><td data-title="Pealkiri" id="title">'+item.title+
-           	'</td><td data-title="Kasutaja" id="user">'+item.user+
-           	'</td><td data-title="Ruum" id="room">'+item.room+
-           	'</td><td data-title="Algus" id="start">'+item.start+
-           	'</td><td data-title="Lõpp" id="end">'+item.end+
-           	'</td><td data-title="Kirjeldus" id="description">'+item.description+
-           	'</td><td data-title="Viimati muudetud" id="changing_date">'+item.changing_date+
-           	'</td><td data-title="Viimane muutja" id="last_changed_user">'+item.last_changed_user+
-           	'</td><td data-title="Broneeringu tüüp" id="type">'+item.type+
-           	'</td></tr>'
-           	);
-      });
-}
+	$.getJSON('events/_getEvents.php', function(data) {
+		var r = new Array();
+		var j = -1, recordId;
+		r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Kasutaja</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Viimati muudetud</th><th>Viimane muutja</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+			for (var i in data){
+			    var d = data[i];
+			    recordId = d.id;
+			    r[++j] = '<tr id="';
+			    r[++j] = recordId;
+			    r[++j] = '"><td data-title="Pealkiri" id="title">';
+			    r[++j] = d.title;
+			    r[++j] = '</td><td data-title="Kasutaja" id="user">';
+			    r[++j] = d.user;
+			    r[++j] = '</td><td data-title="Ruum" id="room">';
+			    r[++j] = d.room;
+			    r[++j] = '</td><td data-title="Algus" id="start">';
+			    r[++j] = d.start;
+			    r[++j] = '</td><td data-title="Lõpp" id="end">';
+			    r[++j] = d.end;
+			    r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+			    r[++j] = d.description;
+			    r[++j] = '</td><td data-title="Viimati muudetud" id="changing_date">';
+			    r[++j] = d.changing_date;
+			    r[++j] = '</td><td data-title="Viimane muutja" id="last_changed_user">';
+			    r[++j] = d.last_changed_user;
+			    r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+			    r[++j] = d.type;
+			    r[++j] = '</td></tr>';
+			}
+		r[++j] = '</tbody>';
+		$('#event-table').html(r.join(''));
+	});
+};
 /*
 *
 *
@@ -249,7 +204,7 @@ function formatDate(date_time){
 	var date = datetime[0].split("-");
 	var time = datetime[1].split(":");
 	return new Date(date[0],date[1]-1,date[2],time[0],time[1]);  
-}
+};
 /*
 *
 *
