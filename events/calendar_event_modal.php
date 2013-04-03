@@ -90,16 +90,14 @@ if (isset($_POST['starting_date'])){
 	          <textarea rows="3" type="" class="" name="event_description" id="event_description"> </textarea>
 	          </div>
 	          </div>
-	          </div>
-	          
+	          </div>      
 	       </fieldset>
 	       </form>
+
 	        <!-- ALERT -->
 	        <div id="alert_placeholder3"></div>
-	        <div class="control-group">
-	        <!-- Text input-->
-	        <div class="controls">
-		    <button class="btn btn-success offset2" type="submit" id="event-add-submit" name="EVENT_SUBMIT_ADD">Sisesta broneering</button>
-        	</div>
-	        </div> 
+	        <div class="pull-right">
+	        <input class="btn" type="submit" id="type-cancel-submit" data-dismiss="modal" aria-hidden="true" value="Sulge"/>
+		    <input class="btn btn-success" type="submit" id="event-add-submit" value="Sisesta broneering"/>
+        	</div> 
 </div><!--modal-body-->

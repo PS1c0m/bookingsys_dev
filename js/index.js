@@ -139,7 +139,7 @@ bootstrap_alert.error = function(message) {
 function checkOverlapping(starting, ending, room_nr){
     var jsonData;
      $.ajax({
-        url: "events/_getEvents.php",
+        url: "events/_getEvents.php?room_nr=" + room_nr,
         dataType: "json",
         async: false,
         success: function(data) {
@@ -164,7 +164,7 @@ function checkOverlapping(starting, ending, room_nr){
     }
     return false; //No overlapping dates  
 };        
-//Check if there are overlapping events on the calendar
+//DISABLED - Check if there are overlapping events on the calendar
 function isOverlapping(eventid){
   //
   $.ajax({
@@ -202,6 +202,16 @@ function initializeCalendar(roomId, room_name){
     events: room_events,
     //weekNumbers: true,
     //dayClick: isValid ? dayClickHandler : null , // activate on click
+    monthNames: ["jaanuar","veebruar","märts","aprill","mai","juuni","juuli", "august", "september", "oktoober", "november", "detsember" ], 
+    monthNamesShort: ['jaan','veebr','märts','apr','mai','juuni','juuli','aug','sept','okt','nov','dets'],
+    dayNames: [ 'Pühapäev', 'Esmaspäev', 'Teisipäev', 'Kolmapäev', 'Neljapäev', 'Reede', 'Laupäev'],
+    dayNamesShort: ['P','E','T','K','N','R','L'],
+    buttonText: {
+      today: 'Täna',
+      month: 'Kuu',
+      week: 'Nädal',
+      day: 'Päev'
+     },
     allDaySlot: false,
     defaultView: 'month',
     header: {
@@ -247,7 +257,7 @@ function initializeCalendar(roomId, room_name){
   //Event rendering to calendar + extended fields for events popover's
   eventRender: function(event, element) {
       element.find(".fc-event-title")
-       .append(' ' + event.type);
+       .append(' </br>' + event.type);
       element.popover({ 
         animation: true,
         trigger: 'hover',
@@ -291,6 +301,7 @@ function initializeCalendar(roomId, room_name){
         var x = new Date();
         current_date = new Date(x.getFullYear(), x.getMonth(), x.getDate());
     }
+    //If user has clicked or dragged a timerange from the past, do not allow this
     if (current_date > start) {
       calendar.fullCalendar('unselect');
       return false;
@@ -299,11 +310,13 @@ function initializeCalendar(roomId, room_name){
     //Check if we are dragging our new event to an existing event.
     //We are checking it againt the cache, if someone has allready booked something it would not work
     //--->
-    for (i in room_events){
-        if (!(room_events[i].start >= end || room_events[i].end <= start)){
-              calendar.fullCalendar('unselect');
-              return false;
-          }
+    if(view.name === "agendaWeek"){
+      for (i in room_events){
+          if (!(room_events[i].start >= end || room_events[i].end <= start)){
+                calendar.fullCalendar('unselect');
+                return false;
+            }
+      }
     }//<---
 
     //If OK then let's open a modal and pass starting-, ending dates and room number to form
@@ -326,7 +339,7 @@ function initializeCalendar(roomId, room_name){
 function pullEvents(room_name){
   var calevents;
   $.ajax({
-    url: "events/_getEvents.php",
+    url: "events/_getEvents.php?room_nr=" + room_name,
     dataType: "json",
     async: false,
     cache: false, //disable ajax caching
@@ -354,8 +367,8 @@ function pullEvents(room_name){
     };
     events.push(event);
   });
-  var room_events = $.grep(events, function(e){ return e.room == room_name; });
-  return room_events;
+  //var room_events = $.grep(events, function(e){ return e.room == room_name; });
+  return events;
 }
 
 $(document).ready(function() {
