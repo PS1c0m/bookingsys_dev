@@ -1,17 +1,3 @@
-// obtain the calendar events from the database
-var calevents;
-$.ajax({
-  url: "events/_getEvents.php",
-  dataType: "json",
-  async: false,
-  cache: false, //disable ajax caching
-  success: function(data) {
-    calevents = data;
-  }
-});
-//var jsonText = JSON.stringify(calevents);
-//document.write('<pre>' + jsonText + '</pre>');
-// obtain the validation check from the session
 var isValid;
 $.ajax({
   url: "_isValid.php",
@@ -47,7 +33,7 @@ function loadDateTimePicker(){
 *
 *
 */
-function newEvent(starting_date, ending_date, allDay, room) { 
+function newEvent(starting_date, ending_date, allDay, room, calendar) { 
   $.post("events/calendar_event_modal.php", { starting_date : starting_date, ending_date : ending_date, allDay : allDay, room : room },
    function(data) {
      $("#myModal").html(data);
@@ -101,14 +87,13 @@ function newEvent(starting_date, ending_date, allDay, room) {
                            } else if(msg == 'error2') { 
                              bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu väljad peavad olema täidetud.');
                            } else {
-                              //success do something
+                            //success do something
                             //bootstrap_alert.success('<strong>Broneering edukalt süsteemi lisatud.</strong>');
+                            calendar.fullCalendar('removeEvents');
+                            calendar.fullCalendar('addEventSource', pullEvents(room));
+                            calendar.fullCalendar('rerenderEvents');
                             $("#event-add-form")[0].reset(); //Clear data after successful submit
                             $("#myModal").modal('hide');
-
-                            var roomId='#room' + room_nr;
-                            console.log(roomId);
-                            $(roomId).fullCalendar('refetchEvents')
                            }                 
                         }
                       }); //ajax
@@ -211,93 +196,21 @@ function isOverlapping(eventid){
     return false;
 };
 
-$(document).ready(function() {
-  /*
-  *
-  *
-  *Get JSON data from DB
-  *
-  *
-  */
-  $.ajax({
-      url: "room/_getRooms.php",
-      dataType: "json",
-      async: false,
-      cache: true, //enable ajax caching
-      success: function(data) {
-        originalJson = data;
-      }
-    }); 
-  /*
-  *
-  *
-  *Build and populate the table in Info tab with data from JSON 
-  *
-  *
-  */
-  var table_object = $('table#rooms-table-calendar > tbody');
-    $.each(originalJson, function(index, value){
-     table_object.append($(
-      '<tr><td  data-title="Ruumi number"   id="room_nr">'    +value.room_nr+
-      '</td><td data-title="Ruumi tüüp"     id="type">'     +value.type+
-      '</td><td data-title="Istekohtade arv"  id="size">'     +value.size+
-      '</td><td data-title="Ruumi kirjeldus"  id="description">'  +value.description+
-      '</td></tr>'));
-  });
-
-  /*
-  *
-  *
-  *Get calendar events and make a suitable object for claendar plugin from json data
-  *
-  *
-  */
-  var events = []; 
-  $(calevents).each(function(ind,val){
-    var event = {
-      id : val.id,
-      title: val.title,
-      start: new Date(val.s_year, val.s_month-1, val.s_day, val.s_hour, val.s_minute),
-      end: new Date(val.e_year, val.e_month-1, val.e_day, val.e_hour, val.e_minute),
-      backgroundColor: val.background,
-      textColor: val.color,
-      borderColor: "#000",
-      allDay: false, //val.allDay,
-      description: val.description,
-      user: val.user,
-      room: val.room,
-      type: val.type,
-      last_changed_by: val.last_changed_user,
-      changing_date: val.changing_date
-    };
-    events.push(event);
-  });
-var calendar;
-var room_events;
-var room_name;
-$('#myCalTabs a').click(function(e){
-
-    e.preventDefault();
-    room_name = this.id;
-    var roomId='#room' + $(this).text();
-    room_events = $.grep(events, function(e){ return e.room == room_name; });
-
-    $(this).tab('show');
-    $(roomId).fullCalendar('destroy');
-    $(roomId).fullCalendar('render');
-
-  calendar = $(roomId).fullCalendar({
-  
+function initializeCalendar(roomId, room_name){
+  var room_events = pullEvents(room_name);
+  var calendar = $(roomId).fullCalendar({
     events: room_events,
+    //weekNumbers: true,
     //dayClick: isValid ? dayClickHandler : null , // activate on click
+    allDaySlot: false,
     defaultView: 'month',
     header: {
         left: 'prev,next today',
-      	center: 'title',
-      	right: 'month,agendaWeek' //If needed agendaDay can be added (right: 'month,agendaWeek,agendaDay' )
-  	},
-   	selectable: isValid ? true : false, //if user logged in then selecting and editing is enabled else if not logged int then not enabled
-  	selectHelper: isValid ? true : false,
+        center: 'title',
+        right: 'month,agendaWeek' //If needed agendaDay can be added (right: 'month,agendaWeek,agendaDay' )
+    },
+    selectable: isValid ? true : false, //if user logged in then selecting and editing is enabled else if not logged int then not enabled
+    selectHelper: isValid ? true : false,
     //editable: isValid ? true : false, //DISABLED eventResize + eventDrop
     firstDay: 1, //start week from monday
     weekMode: 'variable',
@@ -396,11 +309,101 @@ $('#myCalTabs a').click(function(e){
     //If OK then let's open a modal and pass starting-, ending dates and room number to form
      var starting_date = $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm");
      var ending_date = $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm");
-     newEvent( starting_date, ending_date, allDay, room_name );
+     newEvent( starting_date, ending_date, allDay, room_name, calendar );
      calendar.fullCalendar('unselect');
+
   },
 
-  });	
+  });
+};
+/*
+*
+*
+*Pull specific room events from server and make an object compatible for fullcalendar plugin
+*
+*
+*/
+function pullEvents(room_name){
+  var calevents;
+  $.ajax({
+    url: "events/_getEvents.php",
+    dataType: "json",
+    async: false,
+    cache: false, //disable ajax caching
+    success: function(data) {
+      calevents = data;
+    }
+  });
+  var events = []; 
+  $(calevents).each(function(ind,val){
+    var event = {
+      id : val.id,
+      title: val.title,
+      start: new Date(val.s_year, val.s_month-1, val.s_day, val.s_hour, val.s_minute),
+      end: new Date(val.e_year, val.e_month-1, val.e_day, val.e_hour, val.e_minute),
+      backgroundColor: val.background,
+      textColor: val.color,
+      borderColor: "#000",
+      allDay: false, //val.allDay,
+      description: val.description,
+      user: val.user,
+      room: val.room,
+      type: val.type,
+      last_changed_by: val.last_changed_user,
+      changing_date: val.changing_date
+    };
+    events.push(event);
+  });
+  var room_events = $.grep(events, function(e){ return e.room == room_name; });
+  return room_events;
+}
 
-});
+$(document).ready(function() {
+  /*
+  *
+  *
+  *Get JSON data from DB
+  *
+  *
+  */
+  $.ajax({
+      url: "room/_getRooms.php",
+      dataType: "json",
+      async: false,
+      cache: true, //enable ajax caching
+      success: function(data) {
+        originalJson = data;
+      }
+    }); 
+  /*
+  *
+  *
+  *Build and populate the table in Info tab with data from JSON 
+  *
+  *
+  */
+  var table_object = $('table#rooms-table-calendar > tbody');
+    $.each(originalJson, function(index, value){
+     table_object.append($(
+      '<tr><td  data-title="Ruumi number"   id="room_nr">'    +value.room_nr+
+      '</td><td data-title="Ruumi tüüp"     id="type">'     +value.type+
+      '</td><td data-title="Istekohtade arv"  id="size">'     +value.size+
+      '</td><td data-title="Ruumi kirjeldus"  id="description">'  +value.description+
+      '</td></tr>'));
+  });
+  /*
+  *
+  *
+  *TABS clicked for a specific room, initialie fullcalendar plugin
+  *
+  *
+  */
+  $('#myCalTabs a').click(function(e){  
+    e.preventDefault();
+    var room_name = this.id;
+    var roomId='#room' + $(this).text();
+    $(this).tab('show');
+    $(roomId).fullCalendar('destroy'); //because of using tabs need to destroy cal before loading new
+    initializeCalendar(roomId, room_name);
+  });
 });
