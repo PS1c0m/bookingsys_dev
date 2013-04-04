@@ -146,10 +146,10 @@ table td { overflow: hidden; }
 */
 bootstrap_alert = function() {}
 bootstrap_alert.success = function(message) {
-            $('#alert_placeholder3').show().html('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+            $('#alert_placeholder3').show().html('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>');
         }
 bootstrap_alert.error = function(message) {
-            $('#alert_placeholder3').show().html('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')       
+            $('#alert_placeholder3').show().html('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>');     
         }
 /*
 *
@@ -191,7 +191,7 @@ function populateTable(){
 		r[++j] = '</tbody>';
 		$('#event-table').html(r.join(''));
 	});
-};
+}
 /*
 *
 *
@@ -204,7 +204,26 @@ function formatDate(date_time){
 	var date = datetime[0].split("-");
 	var time = datetime[1].split(":");
 	return new Date(date[0],date[1]-1,date[2],time[0],time[1]);  
-};
+}
+/*
+*
+*
+*Load specific Room events
+*
+*
+*/
+function loadEventAjax(room_nr){
+  $.ajax({
+    url: "events/_getEvents.php?room_nr=" + room_nr,
+    dataType: "json",
+    async: false,
+    cache: false, //disable ajax caching
+    success: function(data) {
+      jsonData = data;
+    }
+  }); 
+  return jsonData;
+}
 /*
 *
 *
@@ -214,7 +233,7 @@ function formatDate(date_time){
 */
 function isOverlapping(starting, ending){
 	  var room_nr = $('#room_name').val();
-	  var jsonData = loadEventAjax();
+	  var jsonData = loadEventAjax(room_nr);
 	  var events = []; 
   $(jsonData).each(function(index,value){
     var event = {
@@ -232,7 +251,7 @@ function isOverlapping(starting, ending){
     	}
     }
     return false; //No overlapping dates  
-};
+}
 /*
 *
 *

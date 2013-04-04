@@ -18,6 +18,7 @@ if (isset($session->user) && ($session->user->usertype === 'peakasutaja')): ?>
     </div>  
 </div>
 <script>
+"use strict";
 $(document).ready(function() {
 $("#myTabs").tab(); // initialize tabs
 	$("#myTabs").bind("show", function(e) {

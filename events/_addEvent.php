@@ -52,6 +52,10 @@ if (isset($session->user)){
     } 
   } else {
     echo "error3"; //väljad täitmata
+    header("location: ../index.php"); exit();
   }
+} else {
+  unset($session->user);
+  header("location: ../index.php"); exit();
 }
 ?>

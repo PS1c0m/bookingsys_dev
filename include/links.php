@@ -32,6 +32,7 @@ $session = new Session();
 <?php endif ?>
 
 <script type="text/javascript">
+"use strict";
 /*
 $(function() {
 $("#myNavBar").tab(); // initialize tabs

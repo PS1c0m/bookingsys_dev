@@ -59,5 +59,6 @@ $rooms = R::findAll($table);
     	<?php foreach ($rooms as $room) : ?>   	
         <div class="tab-pane hidden-phone" id="room<?php echo $room->room_nr; ?>"></div> 
         <?php endforeach ?>
+
     </div> 
 </div>

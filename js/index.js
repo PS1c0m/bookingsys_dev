@@ -7,15 +7,6 @@ $.ajax({
     isValid = data;
   }
 });
-
-function showEvent(id) {
-  $.post("events/modify_event.php", {id : id},
-   function(data) {
-     $("#myModal").html(data);
-
-     $("#myModal").modal('show')
-   });
-};
 //Used for the modal datetime input
 function loadDateTimePicker(){
   $("input.datetimepicker").datetimepicker({
@@ -24,8 +15,50 @@ function loadDateTimePicker(){
     minuteStep: 15,
     weekStart: 1
    });
-};
-
+}
+/*
+*
+*
+*Open Modal and Change/View existing event
+*
+*
+*/
+function showEvent(id, room, calendar) {
+  $.post("events/existingEventModal.php", {id : id},
+   function(data) {
+     $("#myModal").html(data);
+     $("#event-change-form").hide();
+     $("#myModal").modal('show');
+     loadDateTimePicker();
+     $('#event-change-submit').click( function() {     
+      $("#static-event-data").hide(); 
+      $("#event-change-form").show();  
+     });
+      //If event-delete-submit is clicked delete the event
+      $("#event-delete-submit").click( function(){
+          bootstrap_alert.error('<h4>Hoiatus!</h4>Olete kindel, et soovite antud broneeringut kustutada? </br>Kinnituseks vajutage veelkord "Kustuta"');
+              $("#event-delete-submit").click( function(){
+                     $.ajax({
+                        url: "events/_deleteEvent.php",
+                        type: "POST",
+                        data: { id : id },
+                        success: function(msg) {
+                           if(msg == 'error') { 
+                             //error do something 
+                             bootstrap_alert.error('<strong><h4>Kustutamine ebaõnnestus!</h4>Broneeringut ei saanud kustutatada, kuna seda ei leitud süsteemist.</strong>');
+                           } else {
+                             //success do something   
+                             calendar.fullCalendar('removeEvents');
+                             calendar.fullCalendar('addEventSource', pullEvents(room));
+                             calendar.fullCalendar('rerenderEvents'); 
+                             $("#myModal").modal('hide');
+                           }                 
+                        }
+                      });
+                   });
+       });
+   });
+}
 /*
 *
 *
@@ -34,7 +67,7 @@ function loadDateTimePicker(){
 *
 */
 function newEvent(starting_date, ending_date, allDay, room, calendar) { 
-  $.post("events/calendar_event_modal.php", { starting_date : starting_date, ending_date : ending_date, allDay : allDay, room : room },
+  $.post("events/newEventModal.php", { starting_date : starting_date, ending_date : ending_date, allDay : allDay, room : room },
    function(data) {
      $("#myModal").html(data);
      $("#myModal").modal('show');
@@ -64,7 +97,7 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
                 bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algus ega lõpp ei saa olla minevikus.');
               }
             //Check if start and end dates are not the same
-              else if (start == end) {
+              else if (start === end) {
                 bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algus- ja lõpukellaaeg ei saa olla samad.');
               }
             //Check if start is before end
@@ -81,10 +114,10 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
                         type: "POST",
                         data: $("#event-add-form").serialize(),
                         success: function(msg) {
-                           if(msg == 'error1') {
+                           if(msg === 'error1') {
                              //error do something
                              bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
-                           } else if(msg == 'error2') { 
+                           } else if(msg === 'error2') { 
                              bootstrap_alert.error('<strong><h4>Lisamine Ebaõnnestus!</h4></strong> Broneeringu väljad peavad olema täidetud.');
                            } else {
                             //success do something
@@ -101,7 +134,7 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
             } //else2
       }); // #event-add-submit
    });
-}; // fn newEvent
+} // fn newEvent
 /*
 *
 *
@@ -114,7 +147,7 @@ function formatDate(date_time){
   var date = datetime[0].split("-");
   var time = datetime[1].split(":");
   return new Date(date[0],date[1]-1,date[2],time[0],time[1]);  
-};
+}
 /*
 *
 *
@@ -124,10 +157,10 @@ function formatDate(date_time){
 */
 bootstrap_alert = function() {}
 bootstrap_alert.success = function(message) {
-            $('#alert_placeholder3').show().html('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+            $('#alert_placeholder3').show().html('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>');
         };
 bootstrap_alert.error = function(message) {
-            $('#alert_placeholder3').show().html('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')       
+            $('#alert_placeholder3').show().html('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>');    
         };
 /*
 *
@@ -155,7 +188,7 @@ function checkOverlapping(starting, ending, room_nr){
     };
     events.push(event);
   });
-    for(i in events){
+    for(var i in events){
       if (room_nr == events[i].room_nr){
             if(!(events[i].start >= ending || events[i].end <= starting)){
                 return true; //Match, dates are overlapping    
@@ -163,7 +196,8 @@ function checkOverlapping(starting, ending, room_nr){
       }
     }
     return false; //No overlapping dates  
-};        
+}  
+/*    
 //DISABLED - Check if there are overlapping events on the calendar
 function isOverlapping(eventid){
   //
@@ -182,20 +216,20 @@ function isOverlapping(eventid){
       start: new Date(value.s_year, value.s_month-1, value.s_day, value.s_hour, value.s_minute),
       end: new Date(value.e_year, value.e_month-1, value.e_day, value.e_hour, value.e_minute),
       room: value.room,
-      allDay: value.allDay,
+      allDay: value.allDay
     };
     events.push(event);
   });
-    for(i in events){
-        if(events[i].id != eventid.id && events[i].room == eventid.room){
+    for(var i in events){
+        if(events[i].id !== eventid.id && events[i].room === eventid.room){
             if(!(events[i].start >= eventid.end || events[i].end <= eventid.start)){
                 return true;           
             }
         }
     }
     return false;
-};
-
+}
+*/
 function initializeCalendar(roomId, room_name){
   var room_events = pullEvents(room_name);
   var calendar = $(roomId).fullCalendar({
@@ -230,7 +264,7 @@ function initializeCalendar(roomId, room_name){
     minTime: 7, //week/day table minimum starting time
     maxTime: 21, //calendar ending date
     timeFormat: 'HH:mm{ - HH:mm}', //24h format everywhere
-
+/*
   //DISABLED - Dragging events from one day to other day ( chagning dates )
   eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
     if (isOverlapping(event)) { revertFunc();
@@ -238,7 +272,7 @@ function initializeCalendar(roomId, room_name){
           var starting_date = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm:ss");
           var ending_date = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm:ss");
           if (!(ending_date)) { // <-- if we don't have ending date like allDay events don't have them then we need to give some value to it
-            ending_date = starting_date //<-- for a moment it's good to give same value as starting date.
+            ending_date = starting_date; //<-- for a moment it's good to give same value as starting date.
           }
           $.post("events/change_dates.php", {  //<-- save the chagnes to DB
             starting_date : starting_date, 
@@ -252,12 +286,13 @@ function initializeCalendar(roomId, room_name){
   eventResize: function(event, dayDelta, minuteDelta, revertFunc) {
     if (isOverlapping(event)) {
       revertFunc(); 
-    };
-  },
+    }
+  }, 
+*/
   //Event rendering to calendar + extended fields for events popover's
   eventRender: function(event, element) {
       element.find(".fc-event-title")
-       .append(' </br>' + event.type);
+       .append(' [' + event.type + ']');
       element.popover({ 
         animation: true,
         trigger: 'hover',
@@ -286,7 +321,7 @@ function initializeCalendar(roomId, room_name){
   //Click an event and modal opens to change different fields - need to be authenticated
   eventClick: function (event) {
     if (isValid){
-      showEvent(event.id);
+      showEvent(event.id, room_name, calendar);
     }     
   },
 
@@ -311,7 +346,7 @@ function initializeCalendar(roomId, room_name){
     //We are checking it againt the cache, if someone has allready booked something it would not work
     //--->
     if(view.name === "agendaWeek"){
-      for (i in room_events){
+      for (var i in room_events){
           if (!(room_events[i].start >= end || room_events[i].end <= start)){
                 calendar.fullCalendar('unselect');
                 return false;
@@ -325,10 +360,10 @@ function initializeCalendar(roomId, room_name){
      newEvent( starting_date, ending_date, allDay, room_name, calendar );
      calendar.fullCalendar('unselect');
 
-  },
+  }
 
   });
-};
+}
 /*
 *
 *
@@ -372,7 +407,6 @@ function pullEvents(room_name){
 }
 
 $(document).ready(function() {
-
   /*
   *
   *
@@ -381,7 +415,7 @@ $(document).ready(function() {
   *
   */
   $.getJSON('room/_getRooms.php', function(data) {
-    var r = new Array();
+    var r = [];
     var j = -1;
     r[++j] = '<thead class="cf"><tr><th>Ruumi number</th><th>Ruumi tüüp</th><th>Istekohtade arv</th><th style="width: 50%">Ruumi kirjeldus</th></tr></thead><tbody>';
       for (var i in data){

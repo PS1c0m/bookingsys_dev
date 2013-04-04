@@ -3,12 +3,12 @@
 <html>
 <head>
     <!--[if lte IE 7]><script src="js/ie7/warning.js"></script><script>window.onload=function(){e("js/ie7/")}</script><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="cache-control" content="max-age=604800;private" />
     <title>Broneerimissüsteem</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
     <link rel='stylesheet' type='text/css' href="css/bootstrap-responsive.min.css">
     <link rel='stylesheet' type='text/css' href='css/fullcalendar.css' />
