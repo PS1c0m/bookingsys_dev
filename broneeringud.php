@@ -19,7 +19,7 @@ table td { overflow: hidden; }
 <div class="tabbable">
      <ul id="myEventTabs" class="nav nav-tabs" >
 		<li class='active'><a data-toggle="tab" href="#allevents">Kõik broneeringud</a></li>
-		<li><a data-toggle="tab" href="#personalevents">Sinu broneeringud</a></li>
+		<li><a data-toggle="tab" href="#personalevents">Minu broneeringud</a></li>
 		<li><a data-toggle="tab" href="#addevent">Lisa broneering</a></li>
 	</ul>
 

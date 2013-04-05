@@ -25,6 +25,11 @@ body > .navbar .brand {
 .modal-body {
     max-height: 500px;
 }
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #d9edf7;
+  color: #000;
+  cursor: pointer;
+}
 
 @media (max-width: 480px) { 
     .nav-tabs > li {

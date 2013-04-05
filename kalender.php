@@ -23,7 +23,7 @@ $rooms = R::findAll($table);
 		<?php if (isset($session->user)): ?>
 
 		<section id="no-more-tables">
-			<table class="table table-striped table-hover table-bordered" id="rooms-table-calendar">
+			<table class="table table-striped table-bordered" id="rooms-table-calendar">
 			</table>
 		</section>
 
