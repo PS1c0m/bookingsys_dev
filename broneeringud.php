@@ -30,7 +30,12 @@ table td { overflow: hidden; }
 
     	-->
         <div class="tab-pane active" id="allevents">
+        	<form class="form-inline">
+			  <i class="icon-search"></i> <input type="search" class="input" id="global-search" placeholder="Otsi...">
+			</form>
         	<table class="table table-hover table-bordered table-condensed" id="event-table">
+			</table>
+			<table class="table table-hover table-bordered table-condensed" id="search-table">
 			</table>
         </div>
         <!--
@@ -263,7 +268,6 @@ $(document).ready(function() {
 	$('#loading-indicator').show();
 	populateTable();
 	$('#loading-indicator').hide(); 
-
 	/*
 	*
 	*
@@ -342,5 +346,110 @@ $(document).ready(function() {
 	*
 	*
 	*/
+	/*
+	$("#search").on("keyup", function() {
+    var value = $(this).val();
+    console.log(value);
+
+    $("table tr").each(function(index) {
+        if (index !== 0) {
+
+            $row = $(this);
+
+            var id = $row.find("td:first").text();
+
+            if (id.indexOf(value) !== 0) {
+                $row.hide();
+            }
+            else {
+                $row.show();
+            }
+        }
+    });
+});*/
+
+/*
+		// Write on keyup event of keyword input element
+	$("#search").keyup(function(){
+		// When value of the input is not blank
+		if( $(this).val() != "")
+		{
+			// Show only matching TR, hide rest of them
+			$("#event-table tbody>tr").hide();
+			$("#event-table td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+		}
+		else
+		{
+			// When there is no input or clean again, show everything back
+			$("#event-table tbody>tr").show();
+		}
+	});
+
+*/
+    var minlength = 3;
+
+    $("#global-search").keyup(function () {
+        var that = this,
+        value = $(this).val();
+
+        if (value.length >= minlength ) {
+            $.ajax({
+                type: "GET",
+                url: "events/_getEvents.php",
+                data: {
+                    'search_keyword' : value
+                },
+                dataType: "json",
+                success: function(msg){
+                    //we need to check if the value is the same
+                    if (value==$(that).val()) {                	
+                    //Receiving the result of search here
+                    $('#event-table').hide();
+  
+                    buildSearchTable(msg);
+                    $('#search-table').show();
+                    }
+                }
+            });
+        } 
+        if (value.length < minlength ) {
+        	$('#search-table').hide();
+        	$('#event-table').show();
+        }
+    });
+
+
 });
+function buildSearchTable(data){
+	var r = new Array();
+		var j = -1, recordId;
+		r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Kasutaja</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Viimati muudetud</th><th>Viimane muutja</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+			for (var i in data){
+			    var d = data[i];
+			    recordId = d.id;
+			    r[++j] = '<tr id="';
+			    r[++j] = recordId;
+			    r[++j] = '"><td data-title="Pealkiri" id="title">';
+			    r[++j] = d.title;
+			    r[++j] = '</td><td data-title="Kasutaja" id="user">';
+			    r[++j] = d.username;
+			    r[++j] = '</td><td data-title="Ruum" id="room">';
+			    r[++j] = d.room_nr;
+			    r[++j] = '</td><td data-title="Algus" id="start">';
+			    r[++j] = d.start;
+			    r[++j] = '</td><td data-title="Lõpp" id="end">';
+			    r[++j] = d.end;
+			    r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+			    r[++j] = d.description;
+			    r[++j] = '</td><td data-title="Viimati muudetud" id="changing_date">';
+			    r[++j] = d.changing_date;
+			    r[++j] = '</td><td data-title="Viimane muutja" id="last_changed_user">';
+			    r[++j] = d.last_changed_user;
+			    r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+			    r[++j] = d.type;
+			    r[++j] = '</td></tr>';
+			}
+		r[++j] = '</tbody>';
+		$('#search-table').html(r.join(''));
+}
 </script>

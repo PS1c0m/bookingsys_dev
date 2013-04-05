@@ -337,7 +337,7 @@ function initializeCalendar(roomId, room_name){
       showEvent(event.id, room_name, calendar, unixtime_deltastart, unixtime_deltaend);
     }     
   },
-  //If view changes
+  //Lazy loading, if view changes then ask the events that should fit on that view, etc. month/week/previous/next
   viewDisplay: function(view) { 
     //if(view.name == 'month'){
       var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
@@ -369,7 +369,6 @@ function initializeCalendar(roomId, room_name){
     }
 
     //Check if we are dragging our new event to an existing event.
-    //We are checking it againt the cache, if someone has allready booked something it would not work
     //--->
     if(view.name === "agendaWeek"){
       var room_events = pullEvents(room_name, unixtime_deltastart, unixtime_deltaend);

@@ -1,10 +1,12 @@
 <?php
 require_once "/../include/db.php";
+
+
+function convertEventsJSON($events){
 $types = R::find('typeinfo');
 $user = R::find('user');
 $room = R::find('room');
 
-function convertEventsJSON($events, $room , $user, $types){
   $calevents = array();
     foreach ($events as $event) {
       $calevent = array();
@@ -62,7 +64,8 @@ function convertEventsJSON($events, $room , $user, $types){
     }
     return $calevents;
 }
-  //if calendar view dates are specified (view.start, view.end)
+
+//if calendar view dates are specified (view.start, view.end)
 if (isset($_GET["room_nr"]) && isset($_GET["start"]) && isset($_GET["end"])){
   $room_nr = $_GET["room_nr"];
   date_default_timezone_set('Europe/Tallinn');
@@ -70,15 +73,49 @@ if (isset($_GET["room_nr"]) && isset($_GET["start"]) && isset($_GET["end"])){
   $delta_end = date('Y-m-d H:i:s', $_GET["end"]);
   $roomstartend_events_array = R::getAll('SELECT event.* FROM event INNER JOIN room ON event.room_id = room.id WHERE room.room_nr = :room_nr AND event.start >= :start AND event.end <= :end', array(':room_nr'=>$room_nr, ':start'=>$delta_start, ':end'=>$delta_end));
   $room_events = R::convertToBeans('event',$roomstartend_events_array);
-  echo json_encode(convertEventsJSON($room_events, $room , $user, $types));
-  //Only specified rooms from DB
+  echo json_encode(convertEventsJSON($room_events));
+
+//Only specified rooms from DB
 } elseif (isset($_GET["room_nr"])) {
   $room_nr = $_GET["room_nr"];
   $room_events_array = R::getAll('SELECT event.* FROM event INNER JOIN room ON event.room_id = room.id WHERE room.room_nr = :room_nr', array(':room_nr'=>$room_nr));
   $room_events = R::convertToBeans('event',$room_events_array);
-  echo json_encode(convertEventsJSON($room_events, $room , $user, $types));
+  echo json_encode(convertEventsJSON($room_events));
+
+//If global search
+} elseif (isset($_GET["search_keyword"])) {
+  $search_keyword = $_GET["search_keyword"];
+  $aColumns = array( 
+    'event.title', 
+    'event.start', 
+    'event.end', 
+    'event.changing_date', 
+    'event.last_changed_user', 
+    'event.description', 
+    'username', 
+    'typeinfo.type', 
+    'room_nr' 
+    );
+  $sWhere = "WHERE ";
+    for ( $i=0 ; $i<count($aColumns) ; $i++ ){
+      $sWhere .= $aColumns[$i].' LIKE "%'.$search_keyword.'%" OR ';
+    }
+  $sWhere = substr_replace( $sWhere, "", -3 );
+
+  $sql = "SELECT 
+          event.id, event.title, event.description, room.room_nr,
+          event.last_changed_user, event.changing_date, event.start,
+          event.end, user.username, typeinfo.type
+          FROM event 
+          INNER JOIN room ON event.room_id = room.id
+          INNER JOIN user ON event.user_id = user.id
+          INNER JOIN typeinfo ON event.typeinfo_id = typeinfo.id $sWhere";
+
+  $search_result = R::getAll($sql);
+  echo json_encode($search_result);
+
+//All events from DB
 } else {
-  //All events from DB
   $events = R::find('event');
-  echo json_encode(convertEventsJSON($events, $room , $user, $types));
+  echo json_encode(convertEventsJSON($events));
 }
