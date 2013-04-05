@@ -23,7 +23,7 @@ function loadDateTimePicker(){
 *
 *
 */
-function showEvent(id, room, calendar) {
+function showEvent(id, room, calendar, unixtime_deltastart, unixtime_deltaend) {
   $.post("events/existingEventModal.php", {id : id},
    function(data) {
      $("#myModal").html(data);
@@ -49,7 +49,7 @@ function showEvent(id, room, calendar) {
                            } else {
                              //success do something   
                              calendar.fullCalendar('removeEvents');
-                             calendar.fullCalendar('addEventSource', pullEvents(room));
+                             calendar.fullCalendar('addEventSource', pullEvents(room, unixtime_deltastart, unixtime_deltaend));
                              calendar.fullCalendar('rerenderEvents'); 
                              $("#myModal").modal('hide');
                            }                 
@@ -66,12 +66,17 @@ function showEvent(id, room, calendar) {
 *
 *
 */
-function newEvent(starting_date, ending_date, allDay, room, calendar) { 
+function newEvent(starting_date, ending_date, allDay, room, calendar, unixtime_deltastart, unixtime_deltaend) { 
   $.post("events/newEventModal.php", { starting_date : starting_date, ending_date : ending_date, allDay : allDay, room : room },
    function(data) {
      $("#myModal").html(data);
+     $("#checkbox_inputs").hide();
      $("#myModal").modal('show');
      loadDateTimePicker();
+     //Show recurring events inputs
+    /*  $('#recurring_event').click(function () {
+          $("#checkbox_inputs").toggle(this.checked);
+      }); */
       /*
       *
       *
@@ -80,6 +85,11 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
       *
       */
       $('#event-add-submit').click( function() {
+      
+   /*   if($('#recurring_event').is(':checked')){ 
+         var recurring_event_end =  $('#recurring_event_end').val();
+         console.log(recurring_event_end);
+      } */
       //assign variables and check if the fields are fullfilled
             var start = $('#date-start').val();
             var end =  $('#date-end').val();
@@ -105,7 +115,7 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
                 bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
               }
             // Now check if the dates are overlapping with existing events in DB
-              else if (checkOverlapping(start_date, end_date, room_nr)){
+              else if (checkOverlapping(start_date, end_date, room_nr, unixtime_deltastart, unixtime_deltaend)){
                 bootstrap_alert.error('<strong><h4>Lisamine ebaõnnestus!</h4></strong> Antud ajad kattuvad süsteemis varasemalt olemasoleva broneeringuga.');
             // If not let's send the data to PHP for server-side proccessing via AJAX POST
               } else { //3
@@ -123,7 +133,7 @@ function newEvent(starting_date, ending_date, allDay, room, calendar) {
                             //success do something
                             //bootstrap_alert.success('<strong>Broneering edukalt süsteemi lisatud.</strong>');
                             calendar.fullCalendar('removeEvents');
-                            calendar.fullCalendar('addEventSource', pullEvents(room));
+                            calendar.fullCalendar('addEventSource', pullEvents(room, unixtime_deltastart, unixtime_deltaend));
                             calendar.fullCalendar('rerenderEvents');
                             $("#event-add-form")[0].reset(); //Clear data after successful submit
                             $("#myModal").modal('hide');
@@ -169,10 +179,10 @@ bootstrap_alert.error = function(message) {
 *
 *
 */
-function checkOverlapping(starting, ending, room_nr){
+function checkOverlapping(starting, ending, room_nr, unixtime_deltastart, unixtime_deltaend){
     var jsonData;
      $.ajax({
-        url: "events/_getEvents.php?room_nr=" + room_nr,
+        url: "events/_getEvents.php?room_nr=" + room_nr + "&start=" + unixtime_deltastart + "&end=" + unixtime_deltaend,
         dataType: "json",
         async: false,
         success: function(data) {
@@ -231,9 +241,9 @@ function isOverlapping(eventid){
 }
 */
 function initializeCalendar(roomId, room_name){
-  var room_events = pullEvents(room_name);
   var calendar = $(roomId).fullCalendar({
-    events: room_events,
+    //events: room_events,
+    lazyFetching: true,
     //weekNumbers: true,
     //dayClick: isValid ? dayClickHandler : null , // activate on click
     monthNames: ["jaanuar","veebruar","märts","aprill","mai","juuni","juuli", "august", "september", "oktoober", "november", "detsember" ], 
@@ -321,8 +331,21 @@ function initializeCalendar(roomId, room_name){
   //Click an event and modal opens to change different fields - need to be authenticated
   eventClick: function (event) {
     if (isValid){
-      showEvent(event.id, room_name, calendar);
+      var view = calendar.fullCalendar('getView');
+      var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+      var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
+      showEvent(event.id, room_name, calendar, unixtime_deltastart, unixtime_deltaend);
     }     
+  },
+  //If view changes
+  viewDisplay: function(view) { 
+    //if(view.name == 'month'){
+      var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+      var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
+      $(roomId).fullCalendar('removeEvents');
+      $(roomId).fullCalendar('addEventSource', pullEvents(room_name, unixtime_deltastart, unixtime_deltaend));
+      $(roomId).fullCalendar('rerenderEvents');
+    //}
   },
 
   //Clicking and dragging new event dates - need to be authenticated
@@ -330,6 +353,9 @@ function initializeCalendar(roomId, room_name){
 
     //Do not allow to pick dates from the past
     var view = calendar.fullCalendar('getView');
+    var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+    var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
+
     var current_date = new Date();
     //If current view is month then allow to pick whole day and open modal
     if(view.name === "month"){
@@ -346,6 +372,7 @@ function initializeCalendar(roomId, room_name){
     //We are checking it againt the cache, if someone has allready booked something it would not work
     //--->
     if(view.name === "agendaWeek"){
+      var room_events = pullEvents(room_name, unixtime_deltastart, unixtime_deltaend);
       for (var i in room_events){
           if (!(room_events[i].start >= end || room_events[i].end <= start)){
                 calendar.fullCalendar('unselect');
@@ -357,7 +384,7 @@ function initializeCalendar(roomId, room_name){
     //If OK then let's open a modal and pass starting-, ending dates and room number to form
      var starting_date = $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm");
      var ending_date = $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm");
-     newEvent( starting_date, ending_date, allDay, room_name, calendar );
+     newEvent( starting_date, ending_date, allDay, room_name, calendar, unixtime_deltastart, unixtime_deltaend);
      calendar.fullCalendar('unselect');
 
   }
@@ -371,10 +398,10 @@ function initializeCalendar(roomId, room_name){
 *
 *
 */
-function pullEvents(room_name){
+function pullEvents(room_name, start, end){
   var calevents;
   $.ajax({
-    url: "events/_getEvents.php?room_nr=" + room_name,
+    url: "events/_getEvents.php?room_nr=" + room_name + "&start=" + start + "&end=" + end,
     dataType: "json",
     async: false,
     cache: false, //disable ajax caching

@@ -49,7 +49,28 @@ if (isset($_POST['starting_date'])){
 	          <input type="text" placeholder="yyyy-mm-dd hh:mm" name="date-end" class="datetimepicker" id='date-end' value="<?php echo $ending_date?>">
 	          </div>
 	          </div>
-	          
+	        <!--
+	          <div class="control-group">
+	          <div class="controls">
+	          <label class="checkbox"><input type="checkbox" id="recurring_event">Korduv broneering</label>
+        	  </div>
+			  </div>
+
+			  <div id="checkbox_inputs">
+				  <div class="control-group">
+				  <div class="controls">	
+				  	<label class="checkbox"><input class="checkbox" type="checkbox" id="recurring_each_week">Iga nädal</label>
+				  	<label class="checkbox"><input class="checkbox" type="checkbox" id="recurring_each_month">Iga kuu</label>
+				  </div>
+				  
+				  	<label class="control-label" for="reccurring_event_end">Kordub kuni:</label>
+				  <div class="controls">
+				  	<input type="text" placeholder="yyyy-mm-dd hh:mm" name="recurring_event_end" class="datetimepicker" id='recurring_event_end'>
+				  </div>
+				  </div>
+			  </div>
+			-->
+
 	          <div class="control-group">	
 	          <!-- Text input-->
 	          <label class="control-label" for="event_type" name="">Broneeringu tüüp</label>  

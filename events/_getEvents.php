@@ -62,13 +62,21 @@ function convertEventsJSON($events, $room , $user, $types){
     }
     return $calevents;
 }
-//Only specified rooms from DB
-if(isset($_GET["room_nr"])){
+  //if calendar view dates are specified (view.start, view.end)
+if (isset($_GET["room_nr"]) && isset($_GET["start"]) && isset($_GET["end"])){
+  $room_nr = $_GET["room_nr"];
+  date_default_timezone_set('Europe/Tallinn');
+  $delta_start = date('Y-m-d H:i:s', $_GET["start"]);
+  $delta_end = date('Y-m-d H:i:s', $_GET["end"]);
+  $roomstartend_events_array = R::getAll('SELECT event.* FROM event INNER JOIN room ON event.room_id = room.id WHERE room.room_nr = :room_nr AND event.start >= :start AND event.end <= :end', array(':room_nr'=>$room_nr, ':start'=>$delta_start, ':end'=>$delta_end));
+  $room_events = R::convertToBeans('event',$roomstartend_events_array);
+  echo json_encode(convertEventsJSON($room_events, $room , $user, $types));
+  //Only specified rooms from DB
+} elseif (isset($_GET["room_nr"])) {
   $room_nr = $_GET["room_nr"];
   $room_events_array = R::getAll('SELECT event.* FROM event INNER JOIN room ON event.room_id = room.id WHERE room.room_nr = :room_nr', array(':room_nr'=>$room_nr));
   $room_events = R::convertToBeans('event',$room_events_array);
   echo json_encode(convertEventsJSON($room_events, $room , $user, $types));
-
 } else {
   //All events from DB
   $events = R::find('event');

@@ -9,10 +9,14 @@
     <link rel='stylesheet' href='css/bootstrap.css'>
     <link rel="stylesheet" href="css/bootstrap-responsive.css">
     <link rel='stylesheet' type='text/css' href='css/fullcalendar.css' />
+    <style type="text/css" title="currentStyle">
+    @import "/DataTables/media/css/demo_table.css";
+    </style>
 <script type='text/javascript' src="js/jquery-1.9.1.js"></script>
 <script type='text/javascript' src='js/jquery-ui-1.9.2.custom.min.js'></script>
 <script type='text/javascript' src='js/bootstrap.js'></script>
 <script type='text/javascript' src='js/fullcalendar.js'></script>
+<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
 <?php 
 require_once "include/Session.php";
 $session = new Session();
@@ -85,7 +89,7 @@ table td { overflow: hidden; }
                  </div>
                   <div id="tabs5-pane2" class="tab-pane">
                   <h4>Pane 2 Content</h4>
-                    
+                    <table id="example" class="display"></table>
                   </div>
                   <div id="tabs5-pane3" class="tab-pane">
                     <h4>Pane 3 Content</h4>
@@ -216,6 +220,9 @@ $.ajax({
   }
 });
 $(document).ready(function() {
+
+
+
   //populateTable();
 
  var events = []; 

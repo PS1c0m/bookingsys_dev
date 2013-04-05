@@ -90,6 +90,21 @@ if (!(isset($_POST['id']))){
 
 	          <div class="control-group">	
 	          <!-- Text input-->
+	          <label class="control-label" for="room_name" name="">Ruum</label>  
+	          <div class="controls">
+		          <select name="room_name" id="room_name">
+		           <?php foreach ($rooms as $room): ?>
+		           <option 
+		           <?php if ($room_nr === $room->room_nr) echo "selected" ?>>
+		           <?php echo $room->room_nr ?>
+		           </option>
+		           <?php endforeach ?>
+		          </select>
+	          </div>
+	          </div>
+
+	          <div class="control-group">	
+	          <!-- Text input-->
 	          <label class="control-label" for="event_type" name="">Broneeringu tüüp</label>  
 	          <div class="controls">
 		          <select name="event_type" id="event_type">
