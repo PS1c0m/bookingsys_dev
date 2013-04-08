@@ -12,6 +12,8 @@
     <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
     <link rel='stylesheet' type='text/css' href="css/bootstrap-responsive.min.css">
     <link rel='stylesheet' type='text/css' href='css/fullcalendar.css' />
+    
+    <link rel='stylesheet' type='text/css' href="css/datepicker.css">
     <link rel='stylesheet' type='text/css' href="css/datetimepicker.css">
     <link rel='stylesheet' type='text/css' href="css/custom_styling.css">
 
@@ -24,8 +26,9 @@
     <script type="text/javascript" src="js/jquery.validate.min.js" ></script>
     <script type="text/javascript" src="js/bootbox.min.js" ></script>
     <!-- <script type="text/javascript" src="js/index.js"></script>-->
+    
+    <script type='text/javascript' src='js/bootstrap-datepicker.js'></script>
     <script type='text/javascript' src='js/bootstrap-datetimepicker.min.js'></script>
-
 </head>
 <body>
 

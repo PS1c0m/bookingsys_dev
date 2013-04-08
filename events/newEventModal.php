@@ -82,9 +82,10 @@ if (isset($_POST['starting_date'])){
 		          </select>
 	          </div>
 	          </div>
- 			  
+
+	          <!-- Kasutaja valimine -->
+ 			  <?php if($session->user->usertype === 'peakasutaja'): ?>
  			  <div class="control-group">	
-	          <!-- Text input-->
 	          <label class="control-label" for="event_user" name="">Kasutaja</label>  
 	          <div class="controls">
 		          <select name="event_user" id="event_user">
@@ -94,6 +95,10 @@ if (isset($_POST['starting_date'])){
 		          </select>
 	          </div>
 	          </div>
+	      	  <?php endif?>
+	      	  <?php if($session->user->usertype === 'tavakasutaja'): ?>
+	      	  	<input type="hidden" name="event_user" value="<?php echo $session->user->username ?>" />
+	      	  <?php endif?>
 
  			  <div class="control-group">
 	          <!-- Text input-->

@@ -117,6 +117,25 @@ if (!(isset($_POST['id']))){
 		          </select>
 	          </div>
 	          </div>
+	          
+	           <!-- Kasutaja valimine -->
+ 			  <?php if($session->user->usertype === 'peakasutaja'): ?>
+ 			  <div class="control-group">	
+	          <label class="control-label" for="event_user" name="">Kasutaja</label>  
+	          <div class="controls">
+		          <select name="event_user" id="event_user">
+		           <?php foreach ($users as $usern): ?>
+		           <option
+		            <?php if ($user === $usern->username) echo "selected" ?>>
+		           	<?php echo $usern->username ?></option>
+		           <?php endforeach ?>
+		          </select>
+	          </div>
+	          </div>
+	      	  <?php endif?>
+	      	  <?php if($session->user->usertype === 'tavakasutaja'): ?>
+	      	  	<input type="hidden" name="event_user" value="<?php echo $session->user->username ?>" />
+	      	  <?php endif?>
 
 		 	  <div class="control-group">
 	          <!-- Text input-->

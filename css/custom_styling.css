@@ -22,8 +22,9 @@ body > .navbar .nav > li > a {
 body > .navbar .brand {
       padding: 7px;
 }
+
 .modal-body {
-    max-height: 500px;
+    max-height: 450px;
 }
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
   background-color: #d9edf7;

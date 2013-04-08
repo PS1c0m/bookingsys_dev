@@ -1,4 +1,5 @@
 <?php 
+if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
 require_once "/../include/db.php";
 $table = "room";
 $rooms = R::findAll($table);
