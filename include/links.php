@@ -1,6 +1,7 @@
 <?php
 require_once "include/Session.php";
 $session = new Session();
+
 ?>
 <ul class="nav" id="myNavBar">
 	<!--<li><a href="teated.php" data-toggle="tab" data-target="#content">Teated</a></li>-->
@@ -54,7 +55,10 @@ $("#myNavBar").tab(); // initialize tabs
 });*/
 
 //HACK BROWSERI BACK BUTTONI JAOKS (hash)
+
 $(document).ready(function(){
+
+$(document)[0].oncontextmenu = function() {return false;}
 
 // Load and display content for first tab
 	$('#content').load('kalender.php');
@@ -62,8 +66,9 @@ $(document).ready(function(){
 
 // part 1 : add a hash to the location when I load a sub-page.
 		$('#myNavBar a').click(function(){
-			location.hash=$(this).attr('href').match(/(^.*)\./)[1]
-			$('#myNavBar li').removeClass("active");
+			location.hash=$(this).attr('href').match(/(^.*)\./)[1];
+			//location.hash=$(this).attr('href');
+			//$('#myNavBar li').removeClass("active");
 			//$(this).addClass("active");
 			$(this).tab("show");
 			return false

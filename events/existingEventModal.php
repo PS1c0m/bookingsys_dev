@@ -139,17 +139,17 @@ if (!(isset($_POST['id']))){
 
 		 	  <div class="control-group">
 	          <!-- Text input-->
-	          <label class="control-label" for="date-start">Algus</label>
+	          <label class="control-label" for="date_start">Algus</label>
 	          <div class="controls">
-	          <input type="text" placeholder="yyyy-mm-dd hh:mm" name="date-start" class="datetimepicker" id='date-start' value="<?php echo $start?>">
+	          <input type="text" placeholder="yyyy-mm-dd hh:mm" name="date_start" class="datetimepicker" id='date_start' value="<?php echo $start?>">
 	          </div>
 	          </div>
 
 	          <div class="control-group">
 	          <!-- Text input-->
-	          <label class="control-label" for="date-end">Lõpp</label>
+	          <label class="control-label" for="date_end">Lõpp</label>
 	          <div class="controls">
-	          <input type="text" placeholder="yyyy-mm-dd hh:mm" name="date-end" class="datetimepicker" id='date-end' value="<?php echo $end?>">
+	          <input type="text" placeholder="yyyy-mm-dd hh:mm" name="date_end" class="datetimepicker" id='date_end' value="<?php echo $end?>">
 	          </div>
 	          </div>
 

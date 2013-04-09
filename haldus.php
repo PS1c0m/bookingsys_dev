@@ -3,6 +3,7 @@ if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandl
 require_once "include/Session.php";
 $session = new Session();
 if (isset($session->user) && ($session->user->usertype === 'peakasutaja')): ?>
+
 <div class="tabbable">
      <ul id="myTabs" class="nav nav-tabs" >
 		<li><a id='haldus-tab-1' data-target="#ruumi_lisamine" data-toggle="tab" href="room/add-room.php">Lisa Ruum</a></li>

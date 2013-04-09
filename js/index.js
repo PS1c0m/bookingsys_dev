@@ -33,6 +33,70 @@ function showEvent(id, room, calendar, unixtime_deltastart, unixtime_deltaend) {
      $('#event-change-submit').click( function() {     
       $("#static-event-data").hide(); 
       $("#event-change-form").show();  
+            $("#event-change-submit").click( function(){
+              //Get inputs--->>
+                var inputs = $('#event-change-form :input'); //Gather html input fields
+                var values = {}; //Array
+                inputs.each(function() {  //Each input put into array object
+                    values[this.name] = $(this).val();
+                });
+              //--->>Input end
+
+            if (values.date_start === '' || values.date_end === '' || values.event_heading === '') {
+              bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4></strong> Palun täitke kõik väljad.');     
+            //Fields are fullfilled 
+            } else { //else1
+              var start_date = formatDate(values.date_start);
+              var end_date = formatDate(values.date_end);
+              var date = new Date();
+            //Check if the user has picket a date from the past
+              if (date > start_date  || date > end_date) {
+                bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4></strong> Broneeringu algus ega lõpp ei saa olla minevikus.');
+              }
+            //Check if start and end dates are not the same
+              else if (values.date_start === values.date_end) {
+                bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4></strong> Broneeringu algus- ja lõpukellaaeg ei saa olla samad.');
+              }
+            //Check if start is before end
+              else if (values.date_start > values.date_end) {
+                bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4></strong> Broneeringu algusaeg ei saa olla hilisem lõpukellajast.');
+              }
+            // If not let's send the data to PHP for server-side proccessing via AJAX POST
+               else { //else2
+                $.ajax({
+                        url: "events/_modifyEvent.php",
+                        type: "POST",
+                        data: { 
+                          id : id,
+                          date_end: values.date_end,
+                          date_start: values.date_start,
+                          event_description: values.event_description,
+                          event_heading: values.event_heading,
+                          event_type: values.event_type,
+                          event_user: values.event_user,
+                          room_name: values.room_name
+                        },
+                        success: function(msg) {
+                           if(msg == 'error') { 
+                             bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>Broneeringut ei saanud muuta, kuna seda ei leitud süsteemist.</strong>');
+                           } else if (msg === 'error1') {
+                             bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>Broneeringu algus ei saa olla hilisem broneeringu lõpust.</strong>');
+                           } else if (msg === 'error2') {
+                             bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>Kõik väljad peavad olema täidetud.</strong>');
+                           } else if (msg === 'error3') {
+                             bootstrap_alert.error('<strong><h4>Muutmine ebaõnnestus!</h4>Antud ajad kattuvad süsteemis varasemalt olemasoleva broneeringuga.</strong>');
+                           } else {
+                             //success do something   
+                             calendar.fullCalendar('removeEvents');
+                             calendar.fullCalendar('addEventSource', pullEvents(room, unixtime_deltastart, unixtime_deltaend));
+                             calendar.fullCalendar('rerenderEvents'); 
+                             $("#myModal").modal('hide');
+                           }                 
+                        }
+                      });
+                  }//else2
+              } //else1
+      });
      });
       //If event-delete-submit is clicked delete the event
       $("#event-delete-submit").click( function(){
@@ -56,7 +120,7 @@ function showEvent(id, room, calendar, unixtime_deltastart, unixtime_deltaend) {
                         }
                       });
                    });
-       });
+       });     
    });
 }
 /*

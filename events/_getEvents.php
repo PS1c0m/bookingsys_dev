@@ -99,7 +99,7 @@ elseif (isset($_GET["search_keyword"]) && isset($_GET["start"]) && isset($_GET["
       $sWhere .= $aColumns[$i].' LIKE "%'.$search_keyword.'%" OR ';
     }
   $sWhere = substr_replace( $sWhere, "", -3 );
-  $sWhere .= ")";
+  $sWhere .= ") ORDER BY event.start";
   $sql = "SELECT 
           event.id, event.title, event.description, room.room_nr,
           event.last_changed_user, event.changing_date, event.start,

@@ -26,7 +26,7 @@ if (isset($session->user)){
         $user_id = R::findOne('user', 'username = ?', array($event_user));
         $room_id = R::findOne('room', 'room_nr = ?', array($room_nr));
         $type_id = R::findOne('typeinfo', 'type = ?', array($event_type));
-        //Serverside check if the ending date is later then starting date and get to knpw if it's allday event or not
+        //Serverside check if the ending date is later then starting date and get to know if it's allday event or not
         $subtract = floor(strtotime($date_end) - strtotime($date_start));
         $hours=floor($subtract/3600);
         if ($hours < 0){

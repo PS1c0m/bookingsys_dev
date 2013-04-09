@@ -118,8 +118,7 @@ if (isset($_POST['starting_date'])){
 	          </div>
 	          </div>      
 	       </fieldset>
-	       </form>
-
+	       </form> 
 	        <!-- ALERT -->
 	        <div id="alert_placeholder3"></div>
 	        <div class="pull-right">
