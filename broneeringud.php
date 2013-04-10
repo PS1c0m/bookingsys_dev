@@ -2,10 +2,13 @@
 if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
 require_once "include/Session.php";
 $session = new Session();
+if (isset($session->user)):
+
 require_once "include/db.php";
 $rooms = R::findAll("room");
 $event_types = R::findAll("typeinfo");
 $users = R::findAll("user");
+
 ?>
 
 <style type="text/css">
@@ -72,7 +75,7 @@ table td { overflow: hidden; }
 
     	-->
         <div class="tab-pane" id="personalevents">
-       
+
         </div>
         <!--
 
@@ -179,6 +182,21 @@ table td { overflow: hidden; }
 //Global variables
 var row_count;
 var no_rec_per_page=10; 
+
+/*
+*
+*
+*Datepikcer language
+*
+*
+*/
+$.fn.datepicker.dates['et'] = {
+    days: ['Pühapäev', 'Esmaspäev', 'Teisipäev', 'Kolmapäev', 'Neljapäev', 'Reede', 'Laupäev'],
+    daysShort: ['P','E','T','K','N','R','L'],
+    daysMin: ['P','E','T','K','N','R','L'],
+    months: ["jaanuar","veebruar","märts","aprill","mai","juuni","juuli", "august", "september", "oktoober", "november", "detsember"],
+    monthsShort: ['jaan','veebr','märts','apr','mai','juuni','juuli','aug','sept','okt','nov','dets']
+}
 /*
 *
 *
@@ -407,20 +425,18 @@ function pagination(row_count, no_rec_per_page){
 *
 *
 */
+
 $(document).ready(function() {	
+
 	//When page is loaded initially hide the error DIV
 	$('#alert').hide();
 
+	//How many rows per page
 	$('#rows_per_page').bind('change', function () {
 		no_rec_per_page = this.value; 
 	    pagination(row_count, no_rec_per_page);
 	});
-	/*
-	$('a[data-toggle="tab"]').on('shown', function (e) {
-	  e.target // activated tab
-	  e.relatedTarget // previous tab
-	});
-	*/
+
 	//Tooltip for the search
 	$('#global-search-div').tooltip({
 		trigger: 'hover',
@@ -436,13 +452,14 @@ $(document).ready(function() {
 	$('#search-end-date').val(default_searchEndDate);
 	
 
-	var start = $('#search-start-date').val();
-	var end = $('#search-end-date').val();
+	var start = default_searchStartDate;
+	var end = default_searchEndDate;
 
 	$('#search-start-date')
 	    .datepicker({
 	    format : 'yyyy-mm-dd',
 		weekStart: 1,
+		language: 'et',
 		autoclose: true
 		
 	  }).on('changeDate', function(ev) {
@@ -460,6 +477,7 @@ $(document).ready(function() {
 	    .datepicker({
 	    format : 'yyyy-mm-dd',
 		weekStart: 1,
+		language: 'et',
 		autoclose: true
 		
 	  }).on('changeDate', function(ev) {
@@ -616,3 +634,4 @@ function tableRowClick(){
 	});
 }
 </script>
+<?php endif ?>

@@ -396,7 +396,7 @@ function initializeCalendar(roomId, room_name){
   eventClick: function (event) {
     if (isValid){
       var view = calendar.fullCalendar('getView');
-      var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+      var unixtime_deltastart = parseInt(view.visStart.getTime() / 1000);
       var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
       showEvent(event.id, room_name, calendar, unixtime_deltastart, unixtime_deltaend);
     }     
@@ -404,7 +404,7 @@ function initializeCalendar(roomId, room_name){
   //Lazy loading, if view changes then ask the events that should fit on that view, etc. month/week/previous/next
   viewDisplay: function(view) { 
     //if(view.name == 'month'){
-      var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+      var unixtime_deltastart = parseInt(view.visStart.getTime() / 1000);
       var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
       $(roomId).fullCalendar('removeEvents');
       $(roomId).fullCalendar('addEventSource', pullEvents(room_name, unixtime_deltastart, unixtime_deltaend));
@@ -417,7 +417,7 @@ function initializeCalendar(roomId, room_name){
 
     //Do not allow to pick dates from the past
     var view = calendar.fullCalendar('getView');
-    var unixtime_deltastart = parseInt(view.start.getTime() / 1000);
+    var unixtime_deltastart = parseInt(view.visStart.getTime() / 1000);
     var unixtime_deltaend = parseInt(view.visEnd.getTime() / 1000);
 
     var current_date = new Date();
@@ -472,6 +472,7 @@ function pullEvents(room_name, start, end){
       calevents = data;
     }
   });
+
   var events = []; 
   $(calevents).each(function(ind,val){
     var event = {
@@ -484,11 +485,11 @@ function pullEvents(room_name, start, end){
       borderColor: "#000",
       allDay: false, //val.allDay,
       description: val.description,
-      user: val.user,
+      //user: val.user,
       room: val.room,
-      type: val.type,
-      last_changed_by: val.last_changed_user,
-      changing_date: val.changing_date
+      type: val.type
+      /*last_changed_by: val.last_changed_user,
+      changing_date: val.changing_date */
     };
     events.push(event);
   });
@@ -535,7 +536,9 @@ $(document).ready(function() {
     var room_name = this.id;
     var roomId='#room' + $(this).text();
     $(this).tab('show');
-    $(roomId).fullCalendar('destroy'); //because of using tabs need to destroy cal before loading new
-    initializeCalendar(roomId, room_name);
+    if (!(room_name === '')) {
+      $(roomId).fullCalendar('destroy'); //because of using tabs need to destroy cal before loading new
+      initializeCalendar(roomId, room_name);
+    }
   });
 });

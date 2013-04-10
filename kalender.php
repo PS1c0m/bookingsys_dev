@@ -7,7 +7,6 @@ $table = "room";
 $rooms = R::findAll($table);
 ?>
 <script type="text/javascript" src="js/index.js"></script>
-
 <!-- <div class="tabbable">
      <ul id="myCalTabs" class="nav nav-tabs" > -->
 
@@ -17,6 +16,7 @@ $rooms = R::findAll($table);
      	<?php foreach ($rooms as $room) : ?>
 		<li class='hidden-phone'><a data-toggle="tab" id="<?php echo $room->room_nr; ?>" href='#room<?php echo $room->room_nr; ?>'><?php echo $room->room_nr; ?></a></li>
 		<?php endforeach ?>
+		<li><a href='#mobile-calendar' data-toggle="tab">Kalender</a></li>
 	</ul>
     <div class="tab-content span9" id="tab-content">
     	
@@ -60,6 +60,27 @@ $rooms = R::findAll($table);
     	<?php foreach ($rooms as $room) : ?>   	
         <div class="tab-pane hidden-phone" id="room<?php echo $room->room_nr; ?>"></div> 
         <?php endforeach ?>
+
+
+	    <div class="tab-pane" id="mobile-calendar">
+	    	
+		        <div id="datepicker"></div>
+		        <script type="text/javascript">
+		        
+		        var today = $.fullCalendar.formatDate(new Date(), 'yyyy-MM-dd');
+		        console.log(today);
+		        $("#datepicker").datepicker({
+					    format: 'yyyy-mm-dd',
+					    weekStart: 1,
+					 }).on('changeDate', function(ev) {
+					 	console.log('change');
+					 	console.log(ev.date.valueOf());
+					 });
+		        </script>
+		    <section id="no-more-tables">
+		    <section>
+		    
+	    </div> 
 
     </div> 
 </div>
