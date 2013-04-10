@@ -462,6 +462,7 @@ function initializeCalendar(roomId, room_name){
 *
 */
 function pullEvents(room_name, start, end){
+  $('#loading-indicator').show();
   var calevents;
   $.ajax({
     url: "events/_getEvents.php?room_nr=" + room_name + "&start=" + start + "&end=" + end,
@@ -494,8 +495,77 @@ function pullEvents(room_name, start, end){
     events.push(event);
   });
   //var room_events = $.grep(events, function(e){ return e.room == room_name; });
+  $('#loading-indicator').hide();
   return events;
 }
+/*
+*
+*
+*Pull specific date events from server and build table for it
+*Used for mobile view
+*
+*/
+function buildmobilCalTbl(unixtimestamp_start){
+  $.getJSON('events/_getEvents.php?date=' + unixtimestamp_start, function(data) {
+   var r = [];
+   var j = -1;
+   //If logged in user then show more 
+   if (isValid){
+    r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Kasutaja</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Viimati muudetud</th><th>Viimane muutja</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+    for (i in data){
+        var d = data[i];
+        recordId = d.id;
+        r[++j] = '<tr id="';
+        r[++j] = recordId;
+        r[++j] = '"><td data-title="Pealkiri" id="title">';
+        r[++j] = d.title;
+        r[++j] = '</td><td data-title="Kasutaja" id="user">';
+        r[++j] = d.username;
+        r[++j] = '</td><td data-title="Ruum" id="room">';
+        r[++j] = d.room_nr;
+        r[++j] = '</td><td data-title="Algus" id="start">';
+        r[++j] = d.start;
+        r[++j] = '</td><td data-title="Lõpp" id="end">';
+        r[++j] = d.end;
+        r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+        r[++j] = d.description;
+        r[++j] = '</td><td data-title="Viimati muudetud" id="changing_date">';
+        r[++j] = d.changing_date;
+        r[++j] = '</td><td data-title="Viimane muutja" id="last_changed_user">';
+        r[++j] = d.last_changed_user;
+        r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+        r[++j] = d.type;
+        r[++j] = '</td></tr>';
+    }
+   //If user not logged in show less
+   } else {
+     r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+     for (i in data){
+        var d = data[i];
+        recordId = d.id;
+        r[++j] = '<tr id="';
+        r[++j] = recordId;
+        r[++j] = '"><td data-title="Pealkiri" id="title">';
+        r[++j] = d.title;
+        r[++j] = '</td><td data-title="Ruum" id="room">';
+        r[++j] = d.room_nr;
+        r[++j] = '</td><td data-title="Algus" id="start">';
+        r[++j] = d.start;
+        r[++j] = '</td><td data-title="Lõpp" id="end">';
+        r[++j] = d.end;
+        r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+        r[++j] = d.description;
+        r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+        r[++j] = d.type;
+        r[++j] = '</td></tr>';
+    }
+  }
+  r[++j] = '</tbody>';
+  //$('#mobile-calendar-table').empty();
+  $('table#mobile-calendar-table').html(r.join(''));
+  });
+}
+
 
 $(document).ready(function() {
   /*
@@ -536,9 +606,26 @@ $(document).ready(function() {
     var room_name = this.id;
     var roomId='#room' + $(this).text();
     $(this).tab('show');
-    if (!(room_name === '')) {
+    if (!(room_name === '')) { //if tabs are clicked then check if we have a room tab, if not then we dont need to initializeCal
       $(roomId).fullCalendar('destroy'); //because of using tabs need to destroy cal before loading new
       initializeCalendar(roomId, room_name);
     }
+  });   
+ /*
+  *
+  *
+  *For mobile calendar
+  *
+  *
+  */
+  var today = $.fullCalendar.parseDate( $.fullCalendar.formatDate(new Date(), 'yyyy-MM-dd') );
+  var unixtimestamp_start = parseInt(today / 1000);
+  buildmobilCalTbl(unixtimestamp_start); //first build   
+  $("#datepicker").datepicker({
+    format: 'yyyy-mm-dd',
+    weekStart: 1,
+  }).on('changeDate', function(ev) {
+    var nextdate = parseInt(ev.date.valueOf()/1000);
+    buildmobilCalTbl(nextdate); //every time the date has changed
   });
 });

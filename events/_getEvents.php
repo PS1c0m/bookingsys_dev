@@ -176,6 +176,25 @@ if (isset($session->user)){
     echo json_encode($search_result);
   } 
   /*
+  Get only one day events that end and start on that specific day
+  Used for mobile view registered users
+  */
+  elseif (isset($_GET["date"])) {
+    date_default_timezone_set('Europe/Tallinn');
+    $date = date('Y-m-d', $_GET["date"]);
+    $sql = 'SELECT 
+            event.id, event.title, event.description, room.room_nr,
+            event.last_changed_user, event.changing_date, event.start,
+            event.end, user.username, typeinfo.type
+            FROM event 
+            INNER JOIN room ON event.room_id = room.id
+            INNER JOIN user ON event.user_id = user.id
+            INNER JOIN typeinfo ON event.typeinfo_id = typeinfo.id 
+            WHERE event.start LIKE "%'.$date.'%" OR event.end LIKE "%'.$date.'%" ORDER BY event.start';
+    $date_events_array = R::getAll($sql);
+    echo json_encode($date_events_array);
+  }
+  /*
   All events from DB
   Not used anywhere in the code
   */
@@ -243,6 +262,24 @@ else {
       }
 
     echo json_encode($calevents);
+  }
+
+  /*
+  Get only one day events that end and start on that specific day
+  Used for mobile view not logged in users
+  */
+  if (isset($_GET["date"])) {
+    date_default_timezone_set('Europe/Tallinn');
+    $date = date('Y-m-d', $_GET["date"]);
+    $sql = 'SELECT 
+            event.id, event.title, event.description, room.room_nr,
+            event.start, event.end, typeinfo.type
+            FROM event 
+            INNER JOIN room ON event.room_id = room.id
+            INNER JOIN typeinfo ON event.typeinfo_id = typeinfo.id 
+            WHERE event.start LIKE "%'.$date.'%" OR event.end LIKE "%'.$date.'%" ORDER BY event.start';
+    $date_events_array = R::getAll($sql);
+    echo json_encode($date_events_array);
   }
 
 } //else user not logged in

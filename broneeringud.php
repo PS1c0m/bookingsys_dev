@@ -14,10 +14,8 @@ $users = R::findAll("user");
 <style type="text/css">
 table { table-layout:fixed; }
 table td { overflow: hidden; }
-#loading-indicator { position: absolute; left:50%; top:50%;}
 </style>
 
-<img src="img/ajax-loader.gif" id="loading-indicator" style="display:none" />
 <section id="no-more-tables">
 
 <div id="hidden-usertype" style="display: none"><?php echo $session->user->usertype ?></div>
@@ -222,6 +220,7 @@ function populateTable(start, end){
 	if (!(start === '') && !(end === '')){
 		 var deltastart = parseInt(formatPaginationDate(start) / 1000);
 		 var deltaend = parseInt((formatPaginationDate(end) / 1000)+86400);
+		$('#loading-indicator').show();
 		$.getJSON('events/_getEvents.php?start=' + deltastart + "&end=" + deltaend, function(data) {
 			var r = new Array();
 			var j = -1, recordId, i;
@@ -259,7 +258,9 @@ function populateTable(start, end){
 			row_count = parseInt(i)+1;		
 			$("#row-count").show().text("Kokku " + row_count + " kirjet");
 			$('#event-table').html(r.join(''));
-			
+
+			$('#loading-indicator').hide();
+
 			pagination(row_count, no_rec_per_page);
 			if ($('#hidden-usertype').text() === 'peakasutaja'){
 				tableRowClick();
@@ -468,7 +469,6 @@ $(document).ready(function() {
 	        	 $('#alert').hide();
 	        	 $("#global-search").val('');
 	        	 populateTable(start, end);
-	
 	        } else {
 	        	$('#alert').show().text('Perioodi algus ei saa olla hilisem perioodi lõpust');
 	        }
@@ -495,9 +495,7 @@ $(document).ready(function() {
 
 
 
-	$('#loading-indicator').show();
-	populateTable(start, end);
-	$('#loading-indicator').hide(); 
+	populateTable(start, end); 
 
 	$('a[href="#addevent"]').click(function(){
 		$("#date-start").datetimepicker({
@@ -599,6 +597,8 @@ $(document).ready(function() {
 			var delta_start = undefined;
 			var delta_end = undefined;
 		}
+		$('#loading-indicator').show();
+
 	            $.ajax({
 	                type: "GET",
 	                url: "events/_getEvents.php",
@@ -613,6 +613,7 @@ $(document).ready(function() {
 	                    if (value==$(that).val()) {                	
 	                    //Receiving the result of search here
 	                    buildSearchTable(msg);
+	                    $('#loading-indicator').hide();
 	                    }
 	                }
 	            });

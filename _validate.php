@@ -11,16 +11,16 @@ $username = trim($params->username);
 $password = $params->password;
 
 $user = R::findOne($table, "username = ?", array($username) );
-
-if (!isset($user)) {                              // no such user
-  $session->username = $params->username;
-  $session->message = "Failed user";
-} elseif ($user->password === sha1($password)) {  // password match 
-  $session->user->username = $username;
-  $session->user->usertype = $user->usertype;
-} else {                                          // wrong password
-  $session->username = $params->username;
-  $session->message = "Failed password";
+if ($user->username === $username){ //Casesenitivity check
+	if (!isset($user)) {                              // no such user
+	  $session->username = $params->username;
+	  $session->message = "Failed user";
+	} elseif ($user->password === sha1($password)) {  // password match 
+	  $session->user->username = $username;
+	  $session->user->usertype = $user->usertype;
+	} else {                                          // wrong password
+	  $session->username = $params->username;
+	  $session->message = "Failed password";
+	}
 }
-
 header( "location: index.php" );   // reload

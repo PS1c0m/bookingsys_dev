@@ -29,9 +29,13 @@
     
     <script type='text/javascript' src='js/bootstrap-datepicker.js'></script>
     <script type='text/javascript' src='js/bootstrap-datetimepicker.min.js'></script>
+<style type="text/css">
+    #loading-indicator { position: absolute; left:50%; top:50%; z-index:1;}
+</style>
 </head>
 <body>
 
+<img src="img/ajax-loader.gif" id="loading-indicator" style="display:none" />
 <div class="navbar navbar-static-top navbar-inverse">
     <div class="navbar-inner">
         <div class="container-fluid">
