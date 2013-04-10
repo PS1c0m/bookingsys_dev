@@ -7,6 +7,7 @@ $table = "room";
 $rooms = R::findAll($table);
 ?>
 <script type="text/javascript" src="js/index.js"></script>
+
 <!-- <div class="tabbable">
      <ul id="myCalTabs" class="nav nav-tabs" > -->
 
@@ -16,7 +17,7 @@ $rooms = R::findAll($table);
      	<?php foreach ($rooms as $room) : ?>
 		<li class='hidden-phone'><a data-toggle="tab" id="<?php echo $room->room_nr; ?>" href='#room<?php echo $room->room_nr; ?>'><?php echo $room->room_nr; ?></a></li>
 		<?php endforeach ?>
-		<li><a href='#mobile-calendar' data-toggle="tab">Ruumide kalender</a></li>
+		<li><a class="hidden-tablet hidden-desktop" id="mobile-calendar-tab" href='#mobile-calendar' data-toggle="tab">Ruumide kalender</a></li>
 	</ul>
     <div class="tab-content span9" id="tab-content">
     	
@@ -62,13 +63,15 @@ $rooms = R::findAll($table);
         <?php endforeach ?>
 
 
-	    <div class="tab-pane" id="mobile-calendar">	    	
-		    <div id="datepicker"></div>
-
-		    <section id="no-more-tables">
-		    	<table class="table table-striped table-bordered" id="mobile-calendar-table"></table>
-		    <section>  
-	    </div> 
-
+		<div class="tab-pane" id="mobile-calendar"> 
+		    <div class="alert alert-info">
+			<a class="close" data-dismiss="alert">×</a> 
+			<strong>Info!</strong>
+			Allolevas kalendris kuupäevale vajutades ilmuvad antud kuupäevaga seotud kõikide ruumide broneeringud ajalises järjestuses
+			</div>
+			<div id="datepicker"></div>
+			<div id="mobile-calendar-table"></div>
+			<!--<table class="footable" id="mobile-calendar-table"></table>-->
+	    </div>
     </div> 
 </div>

@@ -511,58 +511,65 @@ function buildmobilCalTbl(unixtimestamp_start){
    var j = -1;
    //If logged in user then show more 
    if (isValid){
-    r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Kasutaja</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Viimati muudetud</th><th>Viimane muutja</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+    r[++j] = '<table class="footable table-bordered"><thead class="cf"><tr><th data-class="expand">Pealkiri</th><th data-hide="phone,tablet">Kasutaja</th><th data-hide="phone,tablet">Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%" data-hide="phone,tablet">Kirjeldus</th><th data-hide="phone,tablet">Viimati muudetud</th><th data-hide="phone,tablet">Viimane muutja</th><th data-hide="phone,tablet">Broneeringu tüüp</th></tr></thead><tbody>';
     for (i in data){
         var d = data[i];
         recordId = d.id;
+        var mobile_start = $.fullCalendar.formatDate(formatDate(d.start), 'MM.dd HH:mm');
+        var mobile_end = $.fullCalendar.formatDate(formatDate(d.end), 'MM.dd HH:mm');
         r[++j] = '<tr id="';
         r[++j] = recordId;
-        r[++j] = '"><td data-title="Pealkiri" id="title">';
+        r[++j] = '"><td id="title">';
         r[++j] = d.title;
-        r[++j] = '</td><td data-title="Kasutaja" id="user">';
+        r[++j] = '</td><td id="user">';
         r[++j] = d.username;
-        r[++j] = '</td><td data-title="Ruum" id="room">';
+        r[++j] = '</td><td id="room">';
         r[++j] = d.room_nr;
-        r[++j] = '</td><td data-title="Algus" id="start">';
-        r[++j] = d.start;
-        r[++j] = '</td><td data-title="Lõpp" id="end">';
-        r[++j] = d.end;
-        r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+        r[++j] = '</td><td id="start">';
+        r[++j] = mobile_start;
+        r[++j] = '</td><td id="end">';
+        r[++j] = mobile_end;
+        r[++j] = '</td><td id="description">';
         r[++j] = d.description;
-        r[++j] = '</td><td data-title="Viimati muudetud" id="changing_date">';
+        r[++j] = '</td><td id="changing_date">';
         r[++j] = d.changing_date;
-        r[++j] = '</td><td data-title="Viimane muutja" id="last_changed_user">';
+        r[++j] = '</td><td id="last_changed_user">';
         r[++j] = d.last_changed_user;
-        r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+        r[++j] = '</td><td id="type">';
         r[++j] = d.type;
         r[++j] = '</td></tr>';
     }
    //If user not logged in show less
    } else {
-     r[++j] = '<thead class="cf"><tr><th>Pealkiri</th><th>Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%">Kirjeldus</th><th>Broneeringu tüüp</th></tr></thead><tbody>';
+     r[++j] = '<table class="footable table-bordered"><thead class="cf"><tr><th data-class="expand">Pealkiri</th><th data-hide="phone,tablet">Ruum</th><th>Algus</th><th>Lõpp</th><th style="width: 20%" data-hide="phone,tablet">Kirjeldus</th><th data-hide="phone,tablet">Broneeringu tüüp</th></tr></thead><tbody>';
      for (i in data){
         var d = data[i];
         recordId = d.id;
+        var mobile_start = $.fullCalendar.formatDate(formatDate(d.start), 'MM.dd HH:mm');
+        var mobile_end = $.fullCalendar.formatDate(formatDate(d.end), 'MM.dd HH:mm');
         r[++j] = '<tr id="';
         r[++j] = recordId;
-        r[++j] = '"><td data-title="Pealkiri" id="title">';
+        r[++j] = '"><td id="title">';
         r[++j] = d.title;
-        r[++j] = '</td><td data-title="Ruum" id="room">';
+        r[++j] = '</td><td id="room">';
         r[++j] = d.room_nr;
-        r[++j] = '</td><td data-title="Algus" id="start">';
-        r[++j] = d.start;
-        r[++j] = '</td><td data-title="Lõpp" id="end">';
-        r[++j] = d.end;
-        r[++j] = '</td><td data-title="Kirjeldus" id="description">';
+        r[++j] = '</td><td id="start">';
+        r[++j] = mobile_start;
+        r[++j] = '</td><td id="end">';
+        r[++j] = mobile_end;
+        r[++j] = '</td><td id="description">';
         r[++j] = d.description;
-        r[++j] = '</td><td data-title="Broneeringu tüüp" id="type">';
+        r[++j] = '</td><td id="type">';
         r[++j] = d.type;
         r[++j] = '</td></tr>';
     }
   }
-  r[++j] = '</tbody>';
-  //$('#mobile-calendar-table').empty();
-  $('table#mobile-calendar-table').html(r.join(''));
+  r[++j] = '</tbody></table>';
+  $('table.footable').remove();
+  //$('table.footable').html(r.join(''));
+  $('#mobile-calendar-table').append(r.join(''));
+  }).always(function() {  
+    $('table.footable').footable();
   });
 }
 
@@ -618,14 +625,17 @@ $(document).ready(function() {
   *
   *
   */
-  var today = $.fullCalendar.parseDate( $.fullCalendar.formatDate(new Date(), 'yyyy-MM-dd') );
-  var unixtimestamp_start = parseInt(today / 1000);
-  buildmobilCalTbl(unixtimestamp_start); //first build   
-  $("#datepicker").datepicker({
-    format: 'yyyy-mm-dd',
-    weekStart: 1,
-  }).on('changeDate', function(ev) {
-    var nextdate = parseInt(ev.date.valueOf()/1000);
-    buildmobilCalTbl(nextdate); //every time the date has changed
+  $('#mobile-calendar-tab').click(function(){
+    var today = $.fullCalendar.parseDate( $.fullCalendar.formatDate(new Date(), 'yyyy-MM-dd') );
+    var unixtimestamp_start = parseInt(today / 1000);
+    buildmobilCalTbl(unixtimestamp_start); //first build  
+    $("#datepicker").datepicker({
+      format: 'yyyy-mm-dd',
+      weekStart: 1,
+    }).on('changeDate', function(ev) {
+      var nextdate = parseInt(ev.date.valueOf()/1000);
+      buildmobilCalTbl(nextdate); //every time the date has changed
+    });
   });
+
 });

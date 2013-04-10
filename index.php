@@ -16,7 +16,8 @@
     <link rel='stylesheet' type='text/css' href="css/datepicker.css">
     <link rel='stylesheet' type='text/css' href="css/datetimepicker.css">
     <link rel='stylesheet' type='text/css' href="css/custom_styling.css">
-
+    <link rel="stylesheet" type="text/css" href="css/footable-0.1.css"/>
+    
     <!--Modali jaoks vajalik-->
     <script type='text/javascript' src="js/jquery-1.9.1.min.js"></script>
     <script type='text/javascript' src='js/bootstrap.min.js'></script>
@@ -29,6 +30,8 @@
     
     <script type='text/javascript' src='js/bootstrap-datepicker.js'></script>
     <script type='text/javascript' src='js/bootstrap-datetimepicker.min.js'></script>
+    <script type="text/javascript" src="js/footable-0.1.js"></script>
+    
 <style type="text/css">
     #loading-indicator { position: absolute; left:50%; top:50%; z-index:1;}
 </style>
